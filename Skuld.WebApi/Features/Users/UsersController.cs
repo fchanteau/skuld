@@ -38,9 +38,9 @@ namespace Skuld.WebApi.Features.Users
 
         [AllowAnonymous]
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(UserGetModel))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserGetModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
+        [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(UserGetModel))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
         [ValidateInputModel]
         public async Task<IActionResult> CreateUser([FromBody] UserPostModel model)
@@ -48,13 +48,13 @@ namespace Skuld.WebApi.Features.Users
             var modelConverted = this._mapper.Map<UserPostModel, CreateUserDTO>(model);
             var user = await this._userService.CreateUserAsync(modelConverted);
 
-            return Ok(this._mapper.Map<UserDTO, UserGetModel>(user));
+            return CreatedAtAction(nameof(GetUser), this._mapper.Map<UserDTO, UserGetModel>(user));
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(string))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
         [ValidateInputModel]
@@ -67,8 +67,8 @@ namespace Skuld.WebApi.Features.Users
         }
 
         [HttpGet("me")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserGetModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(SkuldProblemDetails))]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(UserGetModel))]
         [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(SkuldProblemDetails))]
         public async Task<IActionResult> GetUser()
