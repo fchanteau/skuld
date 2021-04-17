@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=Skuld;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -Project Skuld.Data -ContextDir ./ -Context SkuldContext -OutputDir Entities -Force
