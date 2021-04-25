@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[RefreshToken]
+(
+	[RefreshTokenId] NUMERIC IDENTITY NOT NULL,
+	[Value] NVARCHAR(255) NOT NULL,
+	[CreatedDate] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+	[ExpiredDate] DATETIME2 NOT NULL,
+	[UserId] NUMERIC NOT NULL,
+
+	CONSTRAINT [PK_RefreshToken] PRIMARY KEY ([RefreshTokenId]),
+	CONSTRAINT [FK_RefreshToken_User] FOREIGN KEY ([UserId]) REFERENCES [User],
+)

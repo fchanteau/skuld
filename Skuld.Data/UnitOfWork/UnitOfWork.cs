@@ -11,6 +11,7 @@ namespace Skuld.Data.UnitOfWork
         private bool _disposed;
 
         private GenericRepository<User> _userRepository;
+        private GenericRepository<RefreshToken> _refreshTokenRepository;
 
         #endregion;
 
@@ -36,6 +37,19 @@ namespace Skuld.Data.UnitOfWork
                 return _userRepository;
             }
         }
+
+        public GenericRepository<RefreshToken> RefreshTokenRepository
+        {
+            get
+            {
+                if (_refreshTokenRepository == null)
+                {
+                    _refreshTokenRepository = new GenericRepository<RefreshToken>(_context);
+                }
+                return _refreshTokenRepository;
+            }
+        }
+
 
         #endregion
 

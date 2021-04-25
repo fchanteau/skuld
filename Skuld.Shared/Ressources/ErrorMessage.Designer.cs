@@ -61,6 +61,15 @@ namespace Skuld.Shared.Ressources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Invalid refresh token.
+        /// </summary>
+        public static string RefreshTokenInvalid {
+            get {
+                return ResourceManager.GetString("RefreshTokenInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Invalid couple email/password.
         /// </summary>
         public static string UserLoginFailed {

@@ -60,5 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\User.sql" />
+    <Build Include="Tables\RefreshToken.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Skuld.Database.refactorlog" />
   </ItemGroup>
 </Project>

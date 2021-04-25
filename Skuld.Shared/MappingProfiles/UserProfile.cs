@@ -14,7 +14,8 @@ namespace Skuld.Shared.MappingProfiles
 
             this.CreateMap<CreateUserDTO, User>()
                 .ForMember(dest => dest.UserId, opt => opt.Ignore())
-                .ForMember(dest => dest.Role, opt => opt.Ignore());
+                .ForMember(dest => dest.Role, opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshTokens, opt => opt.Ignore());
         }
     }
 }

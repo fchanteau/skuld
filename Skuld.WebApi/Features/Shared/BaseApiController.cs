@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Skuld.Shared.Infrastructure.Constants;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using AM = AutoMapper;
 
 namespace Skuld.WebApi.Features.Shared
@@ -26,6 +28,11 @@ namespace Skuld.WebApi.Features.Shared
         protected decimal GetUserIdFromToken()
         {
             return Convert.ToDecimal(this.User.Claims.FirstOrDefault(x => x.Type.Equals(CustomClaimTypes.UserId)).Value);
+        }
+
+        protected Task<string> GetAccessTokenAsync()
+        {
+            return HttpContext.GetTokenAsync("access_token");
         }
     }
 }

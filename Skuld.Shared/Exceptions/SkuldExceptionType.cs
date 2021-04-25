@@ -9,6 +9,9 @@
         // User
         UserAlreadyExist = 100,
         UserLoginFailed = 101,
-        UserNotFound = 102
+        UserNotFound = 102,
+
+        // RefreshToken
+        RefreshTokenInvalid = 200,
     }
 }
