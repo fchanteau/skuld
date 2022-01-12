@@ -34,7 +34,7 @@ namespace Skuld.WebApi
             services.AddDbContext<SkuldContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Skuld"),
                 sqloptions => sqloptions.EnableRetryOnFailure()));
 
-            services.AddCustomDependendyInjection();
+            services.AddCustomDependencyInjection();
 
             services.AddCustomSwaggerGen(this.Configuration);
 

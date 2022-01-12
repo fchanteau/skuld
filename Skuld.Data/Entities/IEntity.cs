@@ -5,4 +5,5 @@
     }
 
     public partial class User : IEntity { }
+    public partial class RefreshToken : IEntity { }
 }

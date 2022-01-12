@@ -18,6 +18,7 @@ namespace Skuld.Data
         {
         }
 
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -32,6 +33,29 @@ namespace Skuld.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.ToTable("RefreshToken");
+
+                entity.Property(e => e.RefreshTokenId)
+                    .HasColumnType("numeric(18, 0)")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.UserId).HasColumnType("numeric(18, 0)");
+
+                entity.Property(e => e.Value)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.RefreshTokens)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RefreshToken_User");
+            });
 
             modelBuilder.Entity<User>(entity =>
             {

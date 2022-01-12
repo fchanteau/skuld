@@ -12,6 +12,8 @@ using Skuld.WebApi.Infrastructure.Exceptions;
 using Skuld.WebApi.Infrastructure.MappingProfile;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Skuld.Shared.Helpers;
 
 namespace Skuld.WebApi.Features.Users
 {
@@ -53,17 +55,32 @@ namespace Skuld.WebApi.Features.Users
 
         [AllowAnonymous]
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponseModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(string))]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(TokenResponseModel))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
         [ValidateInputModel]
         public async Task<IActionResult> Login([FromBody] UserPostLoginModel model)
         {
             var modelConverted = this._mapper.Map<UserPostLoginModel, UserLoginDTO>(model);
-            var token = await this._userService.LoginAsync(modelConverted);
+            var result = await this._userService.LoginAsync(modelConverted);
 
-            return Ok(token);
+            return Ok(new TokenResponseModel(result.Item1, result.Item2));
+        }
+
+        [HttpPost("refreshtoken")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponseModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(TokenResponseModel))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(SkuldProblemDetails))]
+        [ValidateInputModel]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenPostModel model)
+        {
+            var userId = this.GetUserIdFromToken();
+
+            var newToken = await this._userService.ValidRefreshToken(userId, model.RefreshToken);
+
+            return Ok(new TokenResponseModel(newToken, model.RefreshToken));
         }
 
         [HttpGet("me")]

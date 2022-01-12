@@ -10,7 +10,7 @@ namespace Skuld.WebApi.Infrastructure.Configuration
 {
     public static class DependencyInjectionConfiguration
     {
-        public static IServiceCollection AddCustomDependendyInjection(this IServiceCollection services)
+        public static IServiceCollection AddCustomDependencyInjection(this IServiceCollection services)
         {
             services.AddScoped<UnitOfWork>()
                 .AddScoped<UserService>();

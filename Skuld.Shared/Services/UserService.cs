@@ -5,11 +5,13 @@ using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
 using Skuld.Shared.DTO.Users;
 using Skuld.Shared.Exceptions;
+using Skuld.Shared.Helpers;
 using Skuld.Shared.Infrastructure.Configuration.Options;
 using Skuld.Shared.Infrastructure.Constants;
 using Skuld.Shared.MappingProfiles;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -32,7 +34,7 @@ namespace Skuld.Shared.Services
 
             config.AssertConfigurationIsValid();
 
-            this._mapper = new Mapper(config);
+            this.Mapper = new Mapper(config);
             this.jwtOptions = jwtOptions.Value;
         }
 
@@ -45,22 +47,27 @@ namespace Skuld.Shared.Services
             // check if user already exist with the email
             var userAlreadyExist = await this._unitOfWork.UserRepository.AnyAsync(x => x.Email.Equals(model.Email));
             if (userAlreadyExist)
-                throw new SkuldException(System.Net.HttpStatusCode.BadRequest, SkuldExceptionType.UserAlreadyExist, model.Email);
+                throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.UserAlreadyExist, model.Email);
 
             // secured password
             model.Password = Convert.ToBase64String(Encoding.ASCII.GetBytes(model.Password));
 
-            var user = this._mapper.Map<CreateUserDTO, User>(model);
+            var user = this.Mapper.Map<CreateUserDTO, User>(model);
 
+            // insert user
             this._unitOfWork.UserRepository.Insert(user);
+            this._unitOfWork.Save();
+
+            // create refresh token for this user
+            this._unitOfWork.RefreshTokenRepository.Insert(TokenHelper.BuildRefreshToken(user, DateTime.Now.AddDays(7)));
             this._unitOfWork.Save();
 
             var userCreated = await this._unitOfWork.UserRepository.TryGetByIdAsync(user.UserId);
 
-            return this._mapper.Map<User, UserDTO>(userCreated);
+            return this.Mapper.Map<User, UserDTO>(userCreated);
         }
 
-        public async Task<string> LoginAsync(UserLoginDTO model)
+        public async Task<(string, string)> LoginAsync(UserLoginDTO model)
         {
             var cryptedPassword = Convert.ToBase64String(Encoding.ASCII.GetBytes(model.Password));
 
@@ -68,9 +75,25 @@ namespace Skuld.Shared.Services
             if (user == null)
                 throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
 
-            string token = this.CreateToken(user);
+            string token = TokenHelper.CreateToken(user, this.jwtOptions);
 
-            return token;
+            var refreshToken = await this._unitOfWork.RefreshTokenRepository.TryGetFirstAsync(
+                filter: x => x.UserId == user.UserId,
+                orderBy: x => x.OrderByDescending(rt => rt.ExpiredDate));
+
+            if (refreshToken == null)
+            {
+                throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
+            }
+
+            if (refreshToken.ExpiredDate < DateTime.Now)
+            {
+                refreshToken = TokenHelper.BuildRefreshToken(user, DateTime.Now.AddDays(7));
+                this._unitOfWork.RefreshTokenRepository.Insert(refreshToken);
+                this._unitOfWork.Save();
+            }
+
+            return (token, refreshToken.Value);
         }
 
         public async Task<UserDTO> GetUserAsync(decimal userId)
@@ -79,32 +102,23 @@ namespace Skuld.Shared.Services
             if (user == null)
                 throw new SkuldException(HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound);
 
-            return this._mapper.Map<User, UserDTO>(user);
+            return this.Mapper.Map<User, UserDTO>(user);
         }
 
-        #endregion
-
-        #region Private methods
-
-        private string CreateToken(User user)
+        public async Task<string> ValidRefreshToken(decimal userId, string refreshToken)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.jwtOptions.SecretKey));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var response = await this._unitOfWork.RefreshTokenRepository.TryGetOneAsync(filter: x => x.Value == refreshToken && x.UserId == userId);
+            if (response == null ||
+                response.ExpiredDate < DateTime.Now)
+            {
+                throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.RefreshTokenInvalid);
+            }
 
-            var token = new JwtSecurityToken(this.jwtOptions.Issuer,
-                                             this.jwtOptions.Audience,
-                                             expires: DateTime.Now.AddMinutes(30),
-                                             signingCredentials: credentials);
+            var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
 
-            token.Payload.AddClaim(new Claim(CustomClaimTypes.UserId, user.UserId.ToString()));
-            token.Payload.AddClaim(new Claim(CustomClaimTypes.UserName, $"{user.FirstName} {user.LastName}"));
-            token.Payload.AddClaim(new Claim(CustomClaimTypes.UserEmail, $"{user.Email}"));
-            token.Payload.AddClaim(new Claim(CustomClaimTypes.UserRole, $"{user.Role}"));
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return TokenHelper.CreateToken(user, jwtOptions);
         }
 
         #endregion
-
     }
 }
