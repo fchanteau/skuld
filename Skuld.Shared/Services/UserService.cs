@@ -34,7 +34,7 @@ namespace Skuld.Shared.Services
 
             config.AssertConfigurationIsValid();
 
-            this._mapper = new Mapper(config);
+            this.Mapper = new Mapper(config);
             this.jwtOptions = jwtOptions.Value;
         }
 
@@ -52,7 +52,7 @@ namespace Skuld.Shared.Services
             // secured password
             model.Password = Convert.ToBase64String(Encoding.ASCII.GetBytes(model.Password));
 
-            var user = this._mapper.Map<CreateUserDTO, User>(model);
+            var user = this.Mapper.Map<CreateUserDTO, User>(model);
 
             // insert user
             this._unitOfWork.UserRepository.Insert(user);
@@ -64,7 +64,7 @@ namespace Skuld.Shared.Services
 
             var userCreated = await this._unitOfWork.UserRepository.TryGetByIdAsync(user.UserId);
 
-            return this._mapper.Map<User, UserDTO>(userCreated);
+            return this.Mapper.Map<User, UserDTO>(userCreated);
         }
 
         public async Task<(string, string)> LoginAsync(UserLoginDTO model)
@@ -102,7 +102,7 @@ namespace Skuld.Shared.Services
             if (user == null)
                 throw new SkuldException(HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound);
 
-            return this._mapper.Map<User, UserDTO>(user);
+            return this.Mapper.Map<User, UserDTO>(user);
         }
 
         public async Task<string> ValidRefreshToken(decimal userId, string refreshToken)

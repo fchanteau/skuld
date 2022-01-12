@@ -8,7 +8,7 @@ namespace Skuld.Shared.Services
         #region Private properties
 
         protected readonly UnitOfWork _unitOfWork;
-        protected IMapper _mapper;
+        public IMapper Mapper;
 
         #endregion
 
