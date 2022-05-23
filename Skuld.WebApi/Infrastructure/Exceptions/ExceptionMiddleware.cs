@@ -36,10 +36,10 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
             {
                 await HandleArchitectureException(httpContext, ex);
             }
-            //catch (JsonPatchException ex)
-            //{
-            //    await HandleArchitectureException(httpContext, new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.JsonPatchException, new object[] { ex.Message }));
-            //}
+            catch (JsonPatchException ex)
+            {
+                await HandleArchitectureException (httpContext, new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.JsonPatchException, new string[] { ex.Message }));
+            }
             catch (Exception ex)
             {
                 await HandleExceptionAsync(httpContext, ex);

@@ -1,19 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
 using Skuld.Shared.DTO.Users;
 using Skuld.Shared.Exceptions;
 using Skuld.Shared.Helpers;
 using Skuld.Shared.Infrastructure.Configuration.Options;
-using Skuld.Shared.Infrastructure.Constants;
 using Skuld.Shared.MappingProfiles;
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,10 +19,11 @@ namespace Skuld.Shared.Services
     public class UserService : BaseService
     {
         private readonly JwtOptions jwtOptions;
-        
+        private readonly ILogger<UserService> _logger;
+
         #region Constructor
 
-        public UserService(UnitOfWork unitOfWork, IOptions<JwtOptions> jwtOptions) : base(unitOfWork)
+        public UserService(UnitOfWork unitOfWork, IOptions<JwtOptions> jwtOptions, ILogger<UserService> logger) : base(unitOfWork)
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -36,6 +34,7 @@ namespace Skuld.Shared.Services
 
             this.Mapper = new Mapper(config);
             this.jwtOptions = jwtOptions.Value;
+            this._logger = logger;
         }
 
         #endregion
@@ -98,7 +97,8 @@ namespace Skuld.Shared.Services
 
         public async Task<UserDTO> GetUserAsync(decimal userId)
         {
-            var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
+            //var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
+            var user = await this._unitOfWork.UserRepository.TryGetFirstAsync (user => user.UserId == userId);
             if (user == null)
                 throw new SkuldException(HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound);
 
@@ -117,6 +117,23 @@ namespace Skuld.Shared.Services
             var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
 
             return TokenHelper.CreateToken(user, jwtOptions);
+        }
+
+        public bool UpdateUser(UserDTO user)
+        {
+            try
+            {
+                this._unitOfWork.UserRepository.Update (
+                Mapper.Map<UserDTO, User> (user));
+
+                return this._unitOfWork.Save () > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError ($"Error while updating user {user.UserId} : {ex.Message}");
+                throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserUpdateFailed);
+            }
+            
         }
 
         #endregion

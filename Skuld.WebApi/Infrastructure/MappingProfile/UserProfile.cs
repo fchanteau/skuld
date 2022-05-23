@@ -12,7 +12,8 @@ namespace Skuld.WebApi.Infrastructure.MappingProfile
     {
         public UserProfile()
         {
-            this.CreateMap<UserDTO, UserGetModel>();
+            this.CreateMap<UserDTO, UserGetModel> ()
+                .ReverseMap ();
             this.CreateMap<UserPostModel, CreateUserDTO>();
             this.CreateMap<UserPostLoginModel, UserLoginDTO>();
         }
