@@ -9,8 +9,9 @@ namespace Skuld.Shared.MappingProfiles
     {
         public UserProfile()
         {
-            this.CreateMap<User, UserDTO>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => (Role)src.Role));
+            this.CreateMap<User, UserDTO> ()
+                .ForMember (dest => dest.Role, opt => opt.MapFrom (src => (Role)src.Role))
+                .ReverseMap ();
 
             this.CreateMap<CreateUserDTO, User>()
                 .ForMember(dest => dest.UserId, opt => opt.Ignore())

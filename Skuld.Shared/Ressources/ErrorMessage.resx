@@ -123,6 +123,9 @@
   <data name="UserLoginFailed" xml:space="preserve">
     <value>Invalid couple email/password</value>
   </data>
+  <data name="UserUpdateFailed" xml:space="preserve">
+    <value>Something went wrong while updating the user.</value>
+  </data>
   <data name="ValidationFailed" xml:space="preserve">
     <value>Validation's object failed. Error(s) : {0}</value>
   </data>
