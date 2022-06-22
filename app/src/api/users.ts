@@ -26,11 +26,11 @@ export type AddUserPayload = Omit<BackendUser, "userId"> & { password: string };
 
 export const usersApi = (fetch: Fetch): UsersApi => ({
     me: async () => {
-        const res = await fetch('/api/users/me');
+        const res = await fetch('api/users/me');
         return await res.json();
     },
     login: async (payload: LoginUserPayload) => {
-        const res = await fetch('/api/users/login', {method: 'POST', body: JSON.stringify(payload)});
+        const res = await fetch('api/users/login', {method: 'POST', body: JSON.stringify(payload)});
         return await res.json();
     }
 });
