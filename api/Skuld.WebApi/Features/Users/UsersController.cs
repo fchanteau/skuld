@@ -18,6 +18,7 @@ namespace Skuld.WebApi.Features.Users
 {
     [Authorize (Policy = CustomPolicies.AuthorizedUsersOnly)]
     [Produces ("application/json")]
+    [Consumes("application/json")]
     [Route ("api/[controller]")]
     [ApiController]
     public class UsersController : BaseApiController

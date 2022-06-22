@@ -38,7 +38,7 @@ namespace Skuld.WebApi
 
             services.AddCustomSwaggerGen(this.Configuration);
 
-            services.AddControllersWithViews(options =>
+            services.AddControllers(options =>
             {
                 options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
             });
@@ -63,6 +63,13 @@ namespace Skuld.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors (cors =>
+                cors.WithOrigins ("http://localhost:3000")
+                    .AllowAnyHeader ()
+                    .AllowAnyMethod ()
+                    .SetIsOriginAllowedToAllowWildcardSubdomains ()
+            );
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
