@@ -1,17 +1,15 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
-import { Provider, useSelector } from 'react-redux'
-import { store } from './bootstrap/store'
-import { getUserInfos } from './store/users/usersSelectors'
+import { Provider, useSelector } from 'react-redux';
+import { store } from './bootstrap/store';
+import { getUserInfos } from './store/users/usersSelectors';
+import { Header } from './components/layout/Header';
+import { SkuldRouter } from './router';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <Provider store={store}>
       <div className="App">
-        <UserInfos />
+        <Header />
+        <SkuldRouter/>
       </div>
     </Provider>
     
