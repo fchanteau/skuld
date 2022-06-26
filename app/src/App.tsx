@@ -1,25 +1,36 @@
 import { Provider, useSelector } from 'react-redux';
 import { store } from './bootstrap/store';
-import { getUserInfos } from './store/users/usersSelectors';
-import { Header } from './components/layout/Header';
 import { SkuldRouter } from './router';
+import { Sidebar } from './components/layout/Sidebar';
+import { Col, Container, Row } from 'reactstrap';
+import { UserInfos } from './components/layout/UserInfos';
 
 function App() {
   return (
     <Provider store={store}>
-      <div className="App">
-        <Header />
-        <SkuldRouter/>
+      <div className="App d-flex align-items-stretch">
+        <LeftBar />
+        <MainLayout />
       </div>
     </Provider>
     
   )
 }
 
-function UserInfos() {
-  const userInfos = useSelector(getUserInfos);
+function LeftBar() {
   return (
-    <pre>{JSON.stringify(userInfos)}</pre>
+    <div className='min-vh-100 left-bar'>
+      <UserInfos />
+      <Sidebar />
+    </div>
+  )
+}
+
+function MainLayout() {
+  return (
+    <div className='flex-grow-1'>
+      <SkuldRouter />
+    </div>
   )
 }
 

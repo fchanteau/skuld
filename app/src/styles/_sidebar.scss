@@ -1,0 +1,10 @@
+.sidebar {
+    .nav-link {
+        color: $white;
+
+        &:hover {
+            background-color: $white;
+            color: $primary-color;
+        }
+    }
+}
