@@ -1,9 +1,8 @@
 .sidebar {
+    width: 10%;
     .nav-link {
-        color: $white;
-
+        //color: $primary-text-color;
         &:hover {
-            background-color: $white;
             color: $primary-color;
         }
     }

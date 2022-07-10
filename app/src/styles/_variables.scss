@@ -1,12 +1,16 @@
-$primary-color-dark:   #512DA8;
-$primary-color:        #673AB7;
-$primary-color-light:  #D1C4E9;
-$primary-color-text:   #FFFFFF;
-$accent-color:         #FFEB3B;
-$primary-text-color:   #212121;
+$primary-color-dark:   #689F38;
+$primary-color:        #8BC34A;
+$primary-color-light:  #DCEDC8;
+//$primary-color-text:   #212121;
+$accent-color:         #448AFF;
+//$primary-text-color:   #212121;
 $secondary-text-color: #757575;
 $divider-color:        #BDBDBD;
 
-$white: #ffffff;
+// bootstrap overrides
+$primary: $primary-color;
+$secondary: $accent-color;
 
-$background-sidebar : linear-gradient(180deg, $primary-color-dark, $primary-color-light);
+$white: #FFFFFF;
+
+$background-color: #F1F4F6;
