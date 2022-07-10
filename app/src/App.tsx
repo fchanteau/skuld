@@ -1,22 +1,26 @@
-import { Provider, useSelector } from 'react-redux';
-import { store } from './bootstrap/store';
+import { useSelector } from 'react-redux';
 import { Sidebar } from './components/layout/Sidebar';
 import { TopBar } from './components/layout/TopBar';
 import { MainLayout } from './components/layout/MainLayout';
+import { isConnected } from './store/users/usersSelectors';
+import { LandingPage } from './components/layout/LandingPage';
 
 function App() {
+  const userIsConnected = useSelector(isConnected);
+
+  if (!userIsConnected) {
+    return <LandingPage />
+  }
+
   return (
-    <Provider store={store}>
-      <div className="App min-vh-100">
-        <TopBar />
-        <div className='d-flex align-items-stretch'>
-          <Sidebar />
-          <MainLayout />
-        </div>
+    <>
+    <TopBar />
+      <div className='d-flex align-items-stretch'>
+        <Sidebar />
+        <MainLayout />
       </div>
-    </Provider>
-    
+    </>
   )
 }
 
-export default App
+export default App;
