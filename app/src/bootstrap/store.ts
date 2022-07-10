@@ -5,6 +5,6 @@ export const store = createStore;
 
 export const initStore = () => {
     store.dispatch(async (dispatch, _getState, { actionCreators }) => {
-        await dispatch(actionCreators.users.login({email: "francois.chanteau49@gmail.com", password: "Carapuce49"}));
+        await dispatch(actionCreators.users.login({email: "francois.chanteau49@gmail.com", password: "Testtest01"}));
     });
 }
