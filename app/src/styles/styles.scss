@@ -19,3 +19,17 @@ body {
 .main {
   background-color: $background-color;
 }
+
+.landing {
+  background-image: url('bg-landing.png');
+  color: $white;
+
+  .overlay {
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .landing-container {
+    z-index: 20;
+  }
+}
