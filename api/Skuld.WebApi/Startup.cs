@@ -1,27 +1,21 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using Skuld.Data;
 using Skuld.WebApi.Infrastructure.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Skuld.WebApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup (IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -29,39 +23,39 @@ namespace Skuld.WebApi
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices (IServiceCollection services)
         {
-            services.AddDbContext<SkuldContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Skuld"),
-                sqloptions => sqloptions.EnableRetryOnFailure()));
+            services.AddDbContext<SkuldContext> (options => options.UseSqlServer (Configuration.GetConnectionString ("Skuld"),
+                sqloptions => sqloptions.EnableRetryOnFailure ()));
 
-            services.AddCustomDependencyInjection();
+            services.AddCustomDependencyInjection ();
 
-            services.AddCustomSwaggerGen(this.Configuration);
+            services.AddCustomSwaggerGen (this.Configuration);
 
-            services.AddControllers(options =>
+            services.AddControllers (options =>
             {
-                options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                options.InputFormatters.Insert (0, GetJsonPatchInputFormatter ());
             });
 
-            services.AddCustomOptions(this.Configuration);
+            services.AddCustomOptions (this.Configuration);
 
-            services.AddCustomAuthentication(this.Configuration);
+            services.AddCustomAuthentication (this.Configuration);
 
-            services.AddCustomAuthorization();
+            services.AddCustomAuthorization ();
 
-            services.Configure<ApiBehaviorOptions>(options =>
+            services.Configure<ApiBehaviorOptions> (options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            services.AddRouting(options =>
+            services.AddRouting (options =>
             {
                 options.LowercaseUrls = true;
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure (IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors (cors =>
                 cors.WithOrigins ("http://localhost:3000")
@@ -70,42 +64,42 @@ namespace Skuld.WebApi
                     .SetIsOriginAllowedToAllowWildcardSubdomains ()
             );
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment ())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage ();
             }
 
-            app.UseCustomExceptionMiddleware();
+            app.UseCustomExceptionMiddleware ();
 
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection ();
 
-            app.UseRouting();
+            app.UseRouting ();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthentication ();
+            app.UseAuthorization ();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints (endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers ();
             });
 
-            app.UseCustomSwagger(this.Configuration);
+            app.UseCustomSwagger (this.Configuration);
         }
 
-        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter ()
         {
-            var builder = new ServiceCollection()
-                .AddLogging()
-                .AddMvc()
-                .AddNewtonsoftJson()
-                .Services.BuildServiceProvider();
+            var builder = new ServiceCollection ()
+                .AddLogging ()
+                .AddMvc ()
+                .AddNewtonsoftJson ()
+                .Services.BuildServiceProvider ();
 
             return builder
-                .GetRequiredService<IOptions<MvcOptions>>()
+                .GetRequiredService<IOptions<MvcOptions>> ()
                 .Value
                 .InputFormatters
-                .OfType<NewtonsoftJsonPatchInputFormatter>()
-                .First();
+                .OfType<NewtonsoftJsonPatchInputFormatter> ()
+                .First ();
         }
     }
 }

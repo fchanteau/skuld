@@ -11,7 +11,7 @@ namespace Skuld.Tests.Mapping
         [TestMethod]
         public void TestMappingUserService()
         {
-            var service = new UserService(null, Options.Create(new JwtOptions()));
+            var service = new UserService(null, Options.Create(new JwtOptions()), null);
 
             AssertConfigIsValid(service.Mapper);
         }
