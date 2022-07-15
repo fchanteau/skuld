@@ -1,28 +1,29 @@
-import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, CloseButton, Form, FormFeedback, FormGroup, Input, Label, Offcanvas, OffcanvasBody, OffcanvasHeader, Spinner } from "reactstrap";
+import { Alert, Button, Form, FormFeedback, FormGroup, Input, Label, Offcanvas, OffcanvasBody, OffcanvasHeader, Spinner } from "reactstrap";
+import { useCurrentUserQuery, useLoginMutation, UserLoginPayload } from "../api/users/users";
+import { useAppDispatch, useAppSelector } from "../hooks/store";
 import { actionCreators } from "../store/actions";
 import { displayLogin } from "../store/display/displaySelectors";
 import { SkuldLogo } from "./shared/SkuldLogo";
+import { Error } from "./shared/Error";
 
 export function Login() {
-    const dispatch = useDispatch();
-    const login = useSelector(displayLogin);
+    //const dispatch = useAppDispatch();
+    const login = useAppSelector(displayLogin);
 
-    const onClickCloseButton = () => {
-        dispatch(actionCreators.display.toggleLogin());
-    }
+    // const onClickCloseButton = () => {
+    //     dispatch(actionCreators.display.toggleLogin());
+    // }
 
     return (
         <Offcanvas
             direction="end" isOpen={login.show}>
             <OffcanvasHeader>
                 <SkuldLogo width="90%" />
-                <CloseButton onClick={onClickCloseButton} />
+                {/* <CloseButton onClick={onClickCloseButton} /> */}
             </OffcanvasHeader>
             <OffcanvasBody>
-                <LoginForm loading={login.loading}  />
+                <LoginForm />
             </OffcanvasBody>
         </Offcanvas>
     );
@@ -33,18 +34,19 @@ interface LoginFormInput {
     password: string;
 }
 
-interface LoginFormProps {
-    loading: boolean;
-}
 
-function LoginForm(props: LoginFormProps) {
-    const { loading } = props;
-    const dispatch = useDispatch();
+function LoginForm() {
+    const dispatch = useAppDispatch();
+    const [login, { isLoading, error }] = useLoginMutation();   
     const { control, handleSubmit, formState: { errors } } = useForm<LoginFormInput>();
 
-    const onSubmit: SubmitHandler<LoginFormInput> = data => {
-        dispatch(actionCreators.display.toggleLoginLoading());
-        dispatch(actionCreators.users.login(data));
+    const onSubmit: SubmitHandler<LoginFormInput> = async data => {
+        const payload: UserLoginPayload = {
+            email: data.email,
+            password: data.password
+        };
+        const tokenInfos = await login(payload).unwrap();
+        dispatch(actionCreators.users.setTokenInfos(tokenInfos));
       };
 
     return (
@@ -59,10 +61,9 @@ function LoginForm(props: LoginFormProps) {
                 <Label for="email">
                     Email*
                 </Label>
-                {errors.email?.type === 'required' && "fzdsvffsde" }
                 {errors.email?.type === 'required' &&
                     <FormFeedback>
-                        Oh noes! that name is already taken
+                        Email is required
                     </FormFeedback>
                 }
             </FormGroup>
@@ -76,15 +77,23 @@ function LoginForm(props: LoginFormProps) {
                 <Label for="password">
                     Password*
                 </Label>
+                {errors.password?.type === 'required' &&
+                    <FormFeedback>
+                        Password is required
+                    </FormFeedback>
+                }
             </FormGroup>
-            <Button color="primary" className="w-100">
+            <Button color="primary" className="w-100 mb-3">
                 {
-                    loading ?
+                    isLoading ?
                         <Spinner color="dark" /> :
                         "Submit"
                 }
             </Button>
-            <pre>{JSON.stringify(errors)}</pre>
+            
+            {error && 
+                <Error error={error} />
+            }
         </Form>
     )
 }

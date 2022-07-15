@@ -1,9 +1,11 @@
-import { useSelector } from "react-redux";
-import { getUserInfos } from "../store/users/usersSelectors";
+import { useCurrentUserQuery } from "../api/users/users";
 
 export function UserInfos() {
-    const userInfos = useSelector(getUserInfos);
+    const { data } = useCurrentUserQuery();
+
     return (
-        <h5>{userInfos?.firstName} {userInfos?.lastName}</h5>
+        <div className="me-3">
+            <h5>{data?.firstName} {data?.lastName}</h5>
+        </div>
     )
   }

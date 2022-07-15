@@ -1,36 +1,22 @@
-import { Action, combineReducers, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import { createSkuldApi, SkuldApi } from "../api/api";
-import { ActionCreators, actionCreators } from "./actions";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { api } from "../api";
 import { displaySlice } from "./display/displaySlice";
-import { usersSlice } from "./users/usersSlice";
+import { usersSlice } from "./auth/authSlice";
 
 const rootReducer = combineReducers({
+    [api.reducerPath]: api.reducer,
     users: usersSlice.reducer,
     display: displaySlice.reducer,
 });
 
 export const createStore = configureStore({
-        reducer: rootReducer,
-        middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware({
-                thunk: {
-                    extraArgument: {
-                        api: createSkuldApi(),
-                        actionCreators
-                    } as ThunkExtraArgument
-                }
-            }).prepend()
-    });
+    reducer: {
+        [api.reducerPath]: api.reducer,
+        users: usersSlice.reducer,
+        display: displaySlice.reducer,
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+});
 
-export type AppState = ReturnType<typeof rootReducer>;
-export type AppThunk<R = void> = ThunkAction<R, AppState, ThunkExtraArgument, Action<string>>;
-export interface ThunkExtraArgument {
-    api: SkuldApi;
-    actionCreators: ActionCreators;
-}
-export type AsyncThunkApi = {
-    state: AppState;
-    extra: ThunkExtraArgument;
-}
-
-export type AppDispatch = typeof createStore['dispatch'];
+export type AppState = ReturnType<typeof createStore.getState>;
+export type AppDispatch = typeof createStore.dispatch;
