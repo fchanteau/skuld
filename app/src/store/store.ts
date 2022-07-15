@@ -1,10 +1,12 @@
 import { Action, combineReducers, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { createSkuldApi, SkuldApi } from "../api/api";
 import { ActionCreators, actionCreators } from "./actions";
+import { displaySlice } from "./display/displaySlice";
 import { usersSlice } from "./users/usersSlice";
 
 const rootReducer = combineReducers({
-    users: usersSlice.reducer
+    users: usersSlice.reducer,
+    display: displaySlice.reducer,
 });
 
 export const createStore = configureStore({

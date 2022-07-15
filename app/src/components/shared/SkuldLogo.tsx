@@ -8,7 +8,13 @@ interface SkuldLogoProps {
     height?: number;
 }
 
-export function SkuldLogo(props: SkuldLogoProps = {outline: false}) {
+const defaultProps: SkuldLogoProps = {
+    outline: false,
+    width: 2,
+    height: 1
+}
+
+export function SkuldLogo(props: SkuldLogoProps = defaultProps) {
     const { width, height, outline } = props;
     const navigate = useNavigate();
     
