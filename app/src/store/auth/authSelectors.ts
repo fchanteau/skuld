@@ -1,3 +1,3 @@
 import { AppState } from "../store";
 
-export const isConnected = (state: AppState) => state.users.tokenInfos !== null;
+export const isConnected = (state: AppState) => state.auth.tokenInfos !== null;

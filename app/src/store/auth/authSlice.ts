@@ -5,7 +5,7 @@ export const initialState: AuthState = {
     tokenInfos: null
 };
 
-export const usersSlice = createSlice({
+export const authSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
