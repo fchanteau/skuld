@@ -1,9 +1,8 @@
 import { displaySlice } from "./display/displaySlice";
-import { usersSlice } from "./users/usersSlice";
-import * as usersThunks from "./users/usersThunk";
+import { usersSlice } from "./auth/authSlice";
 
 export const actionCreators = {
-    [usersSlice.name]: {...usersSlice.actions, ...usersThunks},
+    [usersSlice.name]: {...usersSlice.actions},
     [displaySlice.name]: {...displaySlice.actions}
 }
 

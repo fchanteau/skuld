@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 interface SkuldLogoProps {
     outline?: boolean;
-    width?: number;
+    width?: string | number;
     height?: number;
 }
 
 const defaultProps: SkuldLogoProps = {
     outline: false,
-    width: 2,
-    height: 1
+    width: 200,
+    height: 100
 }
 
 export function SkuldLogo(props: SkuldLogoProps = defaultProps) {
