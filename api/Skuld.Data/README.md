@@ -31,7 +31,7 @@ Add this code to SkuldContext.cs
 This will create a file in **Migrations** folder who contains c# code to apply to our database for our changes.
 
 ```powershell
-dotnet ef migrations add InitialCreate // InitialCreate is the migration name present in the generate filename
+dotnet ef migrations add InitialCreate  #InitialCreate is the migration name present in the generate filename
 ```
 
 Afterwards, we apply migrations
