@@ -1,5 +1,3 @@
-﻿Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=Skuld;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -Project Skuld.Data -ContextDir ./ -Context SkuldContext -OutputDir Entities -Force
-
 # Documentation
 
 https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli
@@ -36,6 +34,15 @@ dotnet ef migrations add InitialCreate  #InitialCreate is the migration name pre
 
 Afterwards, we apply migrations
 
+```powershell
+dotnet ef database update
+```
+
+## Create database for newcomer
+
+- Create an empty database on your database server or locally
+- Edit **SkuldContext.cs** to add OnConfiguring method (see up)
+- Execute this command, this will play all migrations file present in **Migrations** folder to restore database structure
 ```powershell
 dotnet ef database update
 ```
