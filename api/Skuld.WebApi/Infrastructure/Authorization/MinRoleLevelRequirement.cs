@@ -1,4 +1,4 @@
-﻿using Skuld.Shared.DTO.Enum;
+﻿using Skuld.Shared.Dto.Enum;
 
 namespace Skuld.WebApi.Infrastructure.Authorization
 {

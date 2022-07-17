@@ -35,7 +35,7 @@ namespace Skuld.Shared.Helpers
             {
                 Value = Guid.NewGuid().ToString(),
                 UserId = user.UserId,
-                ExpiredDate = expiredDate,
+                ExpiredAt = expiredDate,
             };
         }
     }
