@@ -1,4 +1,4 @@
-import { SkuldRouter } from "../../router";
+import { SkuldRouter } from "@/router";
 
 export function MainLayout() {
     return (

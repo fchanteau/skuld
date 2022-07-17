@@ -1,11 +1,10 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Alert, Button, Form, FormFeedback, FormGroup, Input, Label, Offcanvas, OffcanvasBody, OffcanvasHeader, Spinner } from "reactstrap";
-import { useCurrentUserQuery, useLoginMutation, UserLoginPayload } from "../api/users/users";
-import { useAppDispatch, useAppSelector } from "../hooks/store";
-import { actionCreators } from "../store/actions";
-import { displayLogin } from "../store/display/displaySelectors";
-import { SkuldLogo } from "./shared/SkuldLogo";
-import { Error } from "./shared/Error";
+import { Button, Form, FormFeedback, FormGroup, Input, Label, Offcanvas, OffcanvasBody, OffcanvasHeader, Spinner } from "reactstrap";
+import { useLoginMutation, UserLoginPayload } from "@/api/users";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { actionCreators } from "@/store";
+import { displayLogin } from "@/store/display";
+import { SkuldLogo, Error } from "@/components/shared";
 
 export function Login() {
     //const dispatch = useAppDispatch();

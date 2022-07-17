@@ -1,5 +1,5 @@
-import { TokenInfos, User } from "../../store/auth/authModels";
-import { api } from "../api";
+import { TokenInfos, User } from "@/store/auth";
+import { api } from "@/api";
 import { toTokenInfos, toUser } from "./mapper";
 
 export interface BackendUser {

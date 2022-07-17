@@ -1,9 +1,6 @@
 import { useSelector } from 'react-redux';
-import { Sidebar } from './components/layout/Sidebar';
-import { TopBar } from './components/layout/TopBar';
-import { MainLayout } from './components/layout/MainLayout';
-import { isConnected } from './store/auth/authSelectors';
-import { LandingPage } from './components/layout/LandingPage';
+import { Sidebar, TopBar, MainLayout, LandingPage } from '@/components/layout';
+import { isConnected } from '@/store/auth';
 
 function App() {
   const userIsConnected = useSelector(isConnected);
