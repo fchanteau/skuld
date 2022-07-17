@@ -1,4 +1,4 @@
-import { TokenInfos, User } from "../../store/auth/authModels";
+import { TokenInfos, User } from "@/store/auth";
 import { BackendTokenInfos, BackendUser } from "./users";
 
 export function toUser(back: BackendUser): User {

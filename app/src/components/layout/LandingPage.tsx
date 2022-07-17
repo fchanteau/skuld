@@ -2,9 +2,9 @@ import { useDispatch } from 'react-redux';
 import { Button, Spinner } from 'reactstrap';
 
 
-import { actionCreators } from '../../store/actions';
-import { Login } from '../Login';
-import { SkuldLogo } from '../shared/SkuldLogo';
+import { actionCreators } from '@/store';
+import { Login } from '@/components/features/auth';
+import { SkuldLogo } from '@/components/shared';
 
 export function LandingPage() {
     const dispatch = useDispatch();

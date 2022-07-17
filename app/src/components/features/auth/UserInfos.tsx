@@ -1,4 +1,4 @@
-import { useCurrentUserQuery } from "../api/users/users";
+import { useCurrentUserQuery } from "@/api/users";
 
 export function UserInfos() {
     const { data } = useCurrentUserQuery();

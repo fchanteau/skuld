@@ -1,4 +1,4 @@
-import { SkuldLogo } from "./shared/SkuldLogo";
+import { SkuldLogo } from "@/components/shared";
 
 export function Home() {
     return (

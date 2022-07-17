@@ -1,4 +1,4 @@
-import { BackendTokenInfos, BackendUser } from "../../api/users/users";
+import { BackendTokenInfos, BackendUser } from "@/api/users";
 
 export type User = BackendUser;
 export type TokenInfos = BackendTokenInfos;

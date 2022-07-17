@@ -1,5 +1,5 @@
-import { displaySlice } from "./display/displaySlice";
-import { authSlice } from "./auth/authSlice";
+import { displaySlice } from "@/store/display";
+import { authSlice } from "@/store/auth";
 
 export const actionCreators = {
     [authSlice.name]: {...authSlice.actions},
