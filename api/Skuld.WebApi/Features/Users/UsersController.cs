@@ -1,123 +1,108 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Skuld.Shared.DTO.Users;
+using Skuld.Shared.Dto.Users;
 using Skuld.Shared.Infrastructure.Constants;
 using Skuld.Shared.Services;
 using Skuld.WebApi.Features.Shared;
-using Skuld.WebApi.Features.Users.Models;
 using Skuld.WebApi.Infrastructure.ActionFilters;
 using Skuld.WebApi.Infrastructure.Exceptions;
-using Skuld.WebApi.Infrastructure.MappingProfile;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Skuld.WebApi.Features.Users
 {
-    [Authorize (Policy = CustomPolicies.AuthorizedUsersOnly)]
-    [Produces ("application/json")]
-    [Consumes("application/json")]
-    [Route ("api/[controller]")]
-    [ApiController]
-    public class UsersController : BaseApiController
-    {
-        private readonly UserService _userService;
+	[Authorize (Policy = CustomPolicies.AuthorizedUsersOnly)]
+	[Produces ("application/json")]
+	[Consumes ("application/json")]
+	[Route ("api/[controller]")]
+	[ApiController]
+	public class UsersController : BaseApiController
+	{
+		private readonly UserService _userService;
 
-        public UsersController (UserService userService)
-        {
-            _userService = userService;
+		public UsersController (UserService userService)
+		{
+			_userService = userService;
+		}
 
-            var config = new MapperConfiguration (cfg =>
-             {
-                 cfg.AddProfile<UserProfile> ();
-             });
+		[AllowAnonymous]
+		[HttpPost]
+		[ProducesResponseType (StatusCodes.Status201Created, Type = typeof (UserResponse))]
+		[ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[SwaggerResponse (StatusCodes.Status201Created, Type = typeof (UserResponse))]
+		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[ValidateInputModel]
+		public async Task<IActionResult> CreateUser ([FromBody] AddUserPayload payload)
+		{
+			var user = await _userService.AddUserAsync (payload);
 
-            config.AssertConfigurationIsValid ();
-            this._mapper = new Mapper (config);
-        }
+			return CreatedAtAction (nameof (GetUser), _mapper.Map<UserResponse, UserResponse> (user));
+		}
 
-        [AllowAnonymous]
-        [HttpPost]
-        [ProducesResponseType (StatusCodes.Status201Created, Type = typeof (UserGetModel))]
-        [ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [SwaggerResponse (StatusCodes.Status201Created, Type = typeof (UserGetModel))]
-        [SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [ValidateInputModel]
-        public async Task<IActionResult> CreateUser ([FromBody] UserPostModel model)
-        {
-            var modelConverted = this._mapper.Map<UserPostModel, CreateUserDTO> (model);
-            var user = await this._userService.CreateUserAsync (modelConverted);
+		[AllowAnonymous]
+		[HttpPost ("login")]
+		[ProducesResponseType (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
+		[ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
+		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[ValidateInputModel]
+		public async Task<IActionResult> Login ([FromBody] LoginPayload payload)
+		{
+			var result = await _userService.LoginAsync (payload);
 
-            return CreatedAtAction (nameof (GetUser), this._mapper.Map<UserDTO, UserGetModel> (user));
-        }
+			return Ok (result);
+		}
 
-        [AllowAnonymous]
-        [HttpPost ("login")]
-        [ProducesResponseType (StatusCodes.Status200OK, Type = typeof (TokenResponseModel))]
-        [ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenResponseModel))]
-        [SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [ValidateInputModel]
-        public async Task<IActionResult> Login ([FromBody] UserPostLoginModel model)
-        {
-            var modelConverted = this._mapper.Map<UserPostLoginModel, UserLoginDTO> (model);
-            var result = await this._userService.LoginAsync (modelConverted);
+		[HttpPost ("refreshtoken")]
+		[ProducesResponseType (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
+		[ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
+		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[ValidateInputModel]
+		public async Task<IActionResult> RefreshToken ([FromBody] RefreshTokenPayload payload)
+		{
+			var userId = GetUserIdFromToken ();
 
-            return Ok (new TokenResponseModel (result.Item1, result.Item2));
-        }
+			var newToken = await _userService.ValidRefreshToken (userId, payload);
 
-        [HttpPost ("refreshtoken")]
-        [ProducesResponseType (StatusCodes.Status200OK, Type = typeof (TokenResponseModel))]
-        [ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenResponseModel))]
-        [SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [ValidateInputModel]
-        public async Task<IActionResult> RefreshToken ([FromBody] RefreshTokenPostModel model)
-        {
-            var userId = this.GetUserIdFromToken ();
+			return Ok (new TokenInfoResponse
+			{
+				Token = newToken,
+				RefreshToken = payload.RefreshToken
+			});
+		}
 
-            var newToken = await this._userService.ValidRefreshToken (userId, model.RefreshToken);
+		[HttpGet ("me")]
+		[ProducesResponseType (StatusCodes.Status200OK, Type = typeof (UserResponse))]
+		[ProducesResponseType (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
+		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (UserResponse))]
+		[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
+		public async Task<IActionResult> GetUser ()
+		{
+			var user = await _userService.GetUserAsync (GetUserIdFromToken ());
 
-            return Ok (new TokenResponseModel (newToken, model.RefreshToken));
-        }
+			return Ok (user);
+		}
 
-        [HttpGet ("me")]
-        [ProducesResponseType (StatusCodes.Status200OK, Type = typeof (UserGetModel))]
-        [ProducesResponseType (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
-        [SwaggerResponse (StatusCodes.Status200OK, Type = typeof (UserGetModel))]
-        [SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
-        public async Task<IActionResult> GetUser ()
-        {
-            var user = await this._userService.GetUserAsync (this.GetUserIdFromToken ());
+		[HttpPatch ("{userId}")]
+		[ProducesResponseType (StatusCodes.Status204NoContent, Type = typeof (void))]
+		[ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[ProducesResponseType (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
+		[SwaggerResponse (StatusCodes.Status204NoContent, Type = typeof (void))]
+		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
+		[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
 
-            var response = this._mapper.Map<UserDTO, UserGetModel> (user);
+		public async Task<IActionResult> PatchUser (long userId, [FromBody] JsonPatchDocument<UserResponse> patch)
+		{
+			var existedUser = await _userService.GetUserAsync (userId);
 
-            return Ok (response);
-        }
+			patch.ApplyTo (existedUser);
 
-        [HttpPatch ("{userId}")]
-        [ProducesResponseType (StatusCodes.Status204NoContent, Type = typeof (void))]
-        [ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [ProducesResponseType (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
-        [SwaggerResponse (StatusCodes.Status204NoContent, Type = typeof (void))]
-        [SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (SkuldProblemDetails))]
-        [SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (SkuldProblemDetails))]
+			_userService.UpdateUser (existedUser);
 
-        public async Task<IActionResult> PatchUser (decimal userId, [FromBody] JsonPatchDocument<UserGetModel> patch)
-        {
-            var existedUser = await this._userService.GetUserAsync (userId);
-
-            var existedUserAsModel = this._mapper.Map<UserDTO, UserGetModel> (existedUser);
-
-            patch.ApplyTo (existedUserAsModel);
-
-            _mapper.Map (existedUserAsModel, existedUser);
-
-            this._userService.UpdateUser (existedUser);
-
-            return NoContent ();
-        }
-    }
+			return NoContent ();
+		}
+	}
 }

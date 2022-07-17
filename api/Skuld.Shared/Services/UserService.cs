@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
-using Skuld.Shared.DTO.Users;
+using Skuld.Shared.Dto.Users;
 using Skuld.Shared.Exceptions;
 using Skuld.Shared.Helpers;
 using Skuld.Shared.Infrastructure.Configuration.Options;
@@ -16,126 +16,141 @@ using System.Threading.Tasks;
 
 namespace Skuld.Shared.Services
 {
-    public class UserService : BaseService
-    {
-        private readonly JwtOptions jwtOptions;
-        private readonly ILogger<UserService> _logger;
+	public class UserService : BaseService
+	{
+		private readonly JwtOptions jwtOptions;
+		private readonly ILogger<UserService> _logger;
 
-        #region Constructor
+		#region Constructor
 
-        public UserService(UnitOfWork unitOfWork, IOptions<JwtOptions> jwtOptions, ILogger<UserService> logger) : base(unitOfWork)
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<UserProfile>();
-            });
+		public UserService (UnitOfWork unitOfWork, IOptions<JwtOptions> jwtOptions, ILogger<UserService> logger) : base (unitOfWork)
+		{
+			var config = new MapperConfiguration (cfg =>
+			{
+				cfg.AddProfile<UserProfile> ();
+			});
 
-            config.AssertConfigurationIsValid();
+			config.AssertConfigurationIsValid ();
 
-            this.Mapper = new Mapper(config);
-            this.jwtOptions = jwtOptions.Value;
-            this._logger = logger;
-        }
+			this.Mapper = new Mapper (config);
+			this.jwtOptions = jwtOptions.Value;
+			this._logger = logger;
+		}
 
-        #endregion
+		#endregion
 
-        #region Public methods
+		#region Public methods
 
-        public async Task<UserDTO> CreateUserAsync(CreateUserDTO model)
-        {
-            // check if user already exist with the email
-            var userAlreadyExist = await this._unitOfWork.UserRepository.AnyAsync(x => x.Email.Equals(model.Email));
-            if (userAlreadyExist)
-                throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.UserAlreadyExist, model.Email);
+		public async Task<UserResponse> AddUserAsync (AddUserPayload payload)
+		{
+			// check if user already exist with the email
+			var userAlreadyExist = await this._unitOfWork.UserRepository.AnyAsync (x => x.Email.Equals (payload.Email));
+			if (userAlreadyExist)
+				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserAlreadyExist, payload.Email);
 
-            // secured password
-            model.Password = Convert.ToBase64String(Encoding.ASCII.GetBytes(model.Password));
+			var user = this.Mapper.Map<AddUserPayload, User> (payload);
 
-            var user = this.Mapper.Map<CreateUserDTO, User>(model);
+			// insert user
+			this._unitOfWork.UserRepository.Insert (user);
+			this._unitOfWork.Save ();
 
-            // insert user
-            this._unitOfWork.UserRepository.Insert(user);
-            this._unitOfWork.Save();
 
-            // create refresh token for this user
-            this._unitOfWork.RefreshTokenRepository.Insert(TokenHelper.BuildRefreshToken(user, DateTime.Now.AddDays(7)));
-            this._unitOfWork.Save();
+			// create password
+			var password = new Password
+			{
+				Value = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password)),
+				UserId = user.UserId,
+			};
+			this._unitOfWork.PasswordRepository.Insert (password);
 
-            var userCreated = await this._unitOfWork.UserRepository.TryGetByIdAsync(user.UserId);
+			// create refresh token for this user
+			this._unitOfWork.RefreshTokenRepository.Insert (TokenHelper.BuildRefreshToken (user, DateTime.Now.AddDays (7)));
 
-            return this.Mapper.Map<User, UserDTO>(userCreated);
-        }
+			// commit changes
+			this._unitOfWork.Save ();
 
-        public async Task<(string, string)> LoginAsync(UserLoginDTO model)
-        {
-            var cryptedPassword = Convert.ToBase64String(Encoding.ASCII.GetBytes(model.Password));
+			var userCreated = await this._unitOfWork.UserRepository.TryGetByIdAsync (user.UserId);
 
-            var user = await this._unitOfWork.UserRepository.TryGetOneAsync(filter: x => x.Email.Equals(model.Email) && x.Password.Equals(cryptedPassword));
-            if (user == null)
-                throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
+			return this.Mapper.Map<User, UserResponse> (userCreated);
+		}
 
-            string token = TokenHelper.CreateToken(user, this.jwtOptions);
+		public async Task<TokenInfoResponse> LoginAsync (LoginPayload payload)
+		{
+			var cryptedPassword = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password));
 
-            var refreshToken = await this._unitOfWork.RefreshTokenRepository.TryGetFirstAsync(
-                filter: x => x.UserId == user.UserId,
-                orderBy: x => x.OrderByDescending(rt => rt.ExpiredDate));
+			var user = await this._unitOfWork.UserRepository.TryGetOneAsync (filter: x => x.Email.Equals (payload.Email), navigationProperties: x => x.Passwords);
+			var validPassword = user?.Passwords.Any (x => x.IsActive && x.Value.Equals (cryptedPassword)) ?? false;
+			if (user is null || !validPassword)
+			{
+				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
+			}
 
-            if (refreshToken == null)
-            {
-                throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
-            }
+			string token = TokenHelper.CreateToken (user, this.jwtOptions);
 
-            if (refreshToken.ExpiredDate < DateTime.Now)
-            {
-                refreshToken = TokenHelper.BuildRefreshToken(user, DateTime.Now.AddDays(7));
-                this._unitOfWork.RefreshTokenRepository.Insert(refreshToken);
-                this._unitOfWork.Save();
-            }
+			var refreshToken = await this._unitOfWork.RefreshTokenRepository.TryGetFirstAsync (
+				filter: x => x.UserId == user.UserId,
+				orderBy: x => x.OrderByDescending (rt => rt.ExpiredAt));
 
-            return (token, refreshToken.Value);
-        }
+			if (refreshToken is null)
+			{
+				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
+			}
 
-        public async Task<UserDTO> GetUserAsync(decimal userId)
-        {
-            //var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
-            var user = await this._unitOfWork.UserRepository.TryGetFirstAsync (user => user.UserId == userId);
-            if (user == null)
-                throw new SkuldException(HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound);
+			if (refreshToken.ExpiredAt < DateTime.Now)
+			{
+				refreshToken = TokenHelper.BuildRefreshToken (user, DateTime.Now.AddDays (7));
+				this._unitOfWork.RefreshTokenRepository.Insert (refreshToken);
+				this._unitOfWork.Save ();
+			}
 
-            return this.Mapper.Map<User, UserDTO>(user);
-        }
+			return new TokenInfoResponse
+			{
+				Token = token,
+				RefreshToken = refreshToken.Value
+			};
+		}
 
-        public async Task<string> ValidRefreshToken(decimal userId, string refreshToken)
-        {
-            var response = await this._unitOfWork.RefreshTokenRepository.TryGetOneAsync(filter: x => x.Value == refreshToken && x.UserId == userId);
-            if (response == null ||
-                response.ExpiredDate < DateTime.Now)
-            {
-                throw new SkuldException(HttpStatusCode.BadRequest, SkuldExceptionType.RefreshTokenInvalid);
-            }
+		public async Task<UserResponse> GetUserAsync (long userId)
+		{
+			//var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
+			var user = await this._unitOfWork.UserRepository.TryGetFirstAsync (user => user.UserId == userId);
+			if (user is null)
+				throw new SkuldException (HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound);
 
-            var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
+			return this.Mapper.Map<User, UserResponse> (user);
+		}
 
-            return TokenHelper.CreateToken(user, jwtOptions);
-        }
+		public async Task<string> ValidRefreshToken (long userId, RefreshTokenPayload payload)
+		{
+			var response = await this._unitOfWork.RefreshTokenRepository.TryGetOneAsync (filter: x => x.Value == payload.RefreshToken && x.UserId == userId);
+			if (response is null ||
+				response.ExpiredAt < DateTime.Now)
+			{
+				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.RefreshTokenInvalid);
+			}
 
-        public bool UpdateUser(UserDTO user)
-        {
-            try
-            {
-                this._unitOfWork.UserRepository.Update (
-                Mapper.Map<UserDTO, User> (user));
+			var user = await this._unitOfWork.UserRepository.TryGetByIdAsync (userId);
 
-                return this._unitOfWork.Save () > 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError ($"Error while updating user {user.UserId} : {ex.Message}");
-                throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserUpdateFailed);
-            }
-            
-        }
+			return TokenHelper.CreateToken (user, jwtOptions);
+		}
 
-        #endregion
-    }
+		public bool UpdateUser (UserResponse user)
+		{
+			try
+			{
+				this._unitOfWork.UserRepository.Update (
+				Mapper.Map<UserResponse, User> (user));
+
+				return this._unitOfWork.Save () > 0;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError ($"Error while updating user {user.UserId} : {ex.Message}");
+				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserUpdateFailed);
+			}
+
+		}
+
+		#endregion
+	}
 }

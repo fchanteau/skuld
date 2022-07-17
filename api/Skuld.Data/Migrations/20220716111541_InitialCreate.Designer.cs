@@ -12,7 +12,7 @@ using Skuld.Data;
 namespace Skuld.Data.Migrations
 {
     [DbContext(typeof(SkuldContext))]
-    [Migration("20220716100614_InitialCreate")]
+    [Migration("20220716111541_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,24 +25,55 @@ namespace Skuld.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Skuld.Data.Entities.RefreshToken", b =>
+            modelBuilder.Entity("Skuld.Data.Entities.Password", b =>
                 {
-                    b.Property<decimal>("RefreshTokenId")
+                    b.Property<long>("PasswordId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(18,0)");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("RefreshTokenId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PasswordId"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("(sysdatetime())");
 
-                    b.Property<DateTime>("ExpiredDate")
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((1))");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PasswordId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Password", (string)null);
+                });
+
+            modelBuilder.Entity("Skuld.Data.Entities.RefreshToken", b =>
+                {
+                    b.Property<long>("RefreshTokenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("RefreshTokenId"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<DateTime>("ExpiredAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(18,0)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -58,11 +89,11 @@ namespace Skuld.Data.Migrations
 
             modelBuilder.Entity("Skuld.Data.Entities.User", b =>
                 {
-                    b.Property<decimal>("UserId")
+                    b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(18,0)");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("UserId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"), 1L, 1);
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -89,6 +120,18 @@ namespace Skuld.Data.Migrations
                     b.ToTable("User", (string)null);
                 });
 
+            modelBuilder.Entity("Skuld.Data.Entities.Password", b =>
+                {
+                    b.HasOne("Skuld.Data.Entities.User", "User")
+                        .WithMany("Passwords")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Password_User");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Skuld.Data.Entities.RefreshToken", b =>
                 {
                     b.HasOne("Skuld.Data.Entities.User", "User")
@@ -103,6 +146,8 @@ namespace Skuld.Data.Migrations
 
             modelBuilder.Entity("Skuld.Data.Entities.User", b =>
                 {
+                    b.Navigation("Passwords");
+
                     b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618

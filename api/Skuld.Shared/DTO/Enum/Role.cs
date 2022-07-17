@@ -1,8 +1,8 @@
-﻿namespace Skuld.Shared.DTO.Enum
+﻿namespace Skuld.Shared.Dto.Enum
 {
-    public enum Role
-    {
-        User = 1,
-        Admin = 2
-    }
+	public enum Role
+	{
+		User = 1,
+		Admin = 2
+	}
 }

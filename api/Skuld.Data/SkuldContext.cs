@@ -5,80 +5,107 @@ using Skuld.Data.Entities;
 
 namespace Skuld.Data
 {
-    public partial class SkuldContext : DbContext
-    {
-        public SkuldContext ()
-        {
-        }
+	public partial class SkuldContext : DbContext
+	{
+		public SkuldContext ()
+		{
+		}
 
-        public SkuldContext (DbContextOptions<SkuldContext> options)
-            : base (options)
-        {
-        }
+		public SkuldContext (DbContextOptions<SkuldContext> options)
+			: base (options)
+		{
+		}
 
-        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
-        public virtual DbSet<User> Users { get; set; }
+		public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+		public virtual DbSet<User> Users { get; set; }
 
-        protected override void OnModelCreating (ModelBuilder modelBuilder)
-        {
-            modelBuilder.HasAnnotation ("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+		protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
+		{
+			if (!optionsBuilder.IsConfigured)
+			{
+				optionsBuilder.UseSqlServer ("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Skuld;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+			}
+		}
 
-            // REFRESHTOKEN
-            modelBuilder.Entity<RefreshToken> (entity =>
-            {
-                entity.ToTable ("RefreshToken");
+		protected override void OnModelCreating (ModelBuilder modelBuilder)
+		{
+			modelBuilder.HasAnnotation ("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-                entity.HasKey (e => e.RefreshTokenId);
+			// REFRESHTOKEN
+			modelBuilder.Entity<RefreshToken> (entity =>
+			{
+				entity.ToTable ("RefreshToken");
 
-                entity.Property (e => e.RefreshTokenId)
-                    .HasColumnType ("numeric(18, 0)")
-                    .UseIdentityColumn ();
+				entity.HasKey (e => e.RefreshTokenId);
 
-                entity.Property (e => e.CreatedDate).HasDefaultValueSql ("(sysdatetime())");
+				entity.Property (e => e.RefreshTokenId)
+					.UseIdentityColumn ();
 
-                entity.Property (e => e.Value)
-                    .IsRequired ()
-                    .HasMaxLength (255);
+				entity.Property (e => e.CreatedAt).HasDefaultValueSql ("(sysdatetime())");
 
-                entity.Property (e => e.UserId).HasColumnType ("numeric(18, 0)");
+				entity.Property (e => e.Value)
+					.IsRequired ()
+					.HasMaxLength (255);
 
-                entity.HasOne (d => d.User)
-                    .WithMany (p => p.RefreshTokens)
-                    .HasForeignKey (d => d.UserId)
-                    .OnDelete (DeleteBehavior.Cascade)
-                    .HasConstraintName ("FK_RefreshToken_User");
-            });
+				entity.HasOne (d => d.User)
+					.WithMany (p => p.RefreshTokens)
+					.HasForeignKey (d => d.UserId)
+					.OnDelete (DeleteBehavior.Cascade)
+					.HasConstraintName ("FK_RefreshToken_User");
+			});
 
-            // USER
-            modelBuilder.Entity<User> (entity =>
-            {
-                entity.ToTable ("User");
+			// USER
+			modelBuilder.Entity<User> (entity =>
+			{
+				entity.ToTable ("User");
 
-                entity.HasKey (e => e.UserId);
+				entity.HasKey (e => e.UserId);
 
-                entity.Property (e => e.UserId)
-                    .HasColumnType ("numeric(18, 0)")
-                    .UseIdentityColumn ();
+				entity.Property (e => e.UserId)
+					.UseIdentityColumn ();
 
-                entity.Property (e => e.Email)
-                    .IsRequired ()
-                    .HasMaxLength (255);
+				entity.Property (e => e.Email)
+					.IsRequired ()
+					.HasMaxLength (255);
 
-                entity.Property (e => e.FirstName)
-                    .IsRequired ()
-                    .HasMaxLength (255);
+				entity.Property (e => e.FirstName)
+					.IsRequired ()
+					.HasMaxLength (255);
 
-                entity.Property (e => e.LastName)
-                    .IsRequired ()
-                    .HasMaxLength (255);
+				entity.Property (e => e.LastName)
+					.IsRequired ()
+					.HasMaxLength (255);
 
+				entity.Property (e => e.Role)
+					.HasDefaultValueSql ("((1))");
+			});
 
-                entity.Property (e => e.Role).HasDefaultValueSql ("((1))");
-            });
+			// PASSWORD
+			modelBuilder.Entity<Password> (entity =>
+			{
+				entity.ToTable ("Password");
 
-            OnModelCreatingPartial (modelBuilder);
-        }
+				entity.HasKey (e => e.PasswordId);
 
-        partial void OnModelCreatingPartial (ModelBuilder modelBuilder);
-    }
+				entity.Property (e => e.PasswordId)
+					.UseIdentityColumn ();
+
+				entity.Property (e => e.CreatedAt).HasDefaultValueSql ("(sysdatetime())");
+
+				entity.Property (e => e.IsActive)
+					.HasColumnType ("bit")
+					.HasDefaultValueSql ("((1))");
+
+				entity.HasOne (d => d.User)
+					.WithMany (p => p.Passwords)
+					.HasForeignKey (d => d.UserId)
+					.OnDelete (DeleteBehavior.Cascade)
+					.HasConstraintName ("FK_Password_User");
+			});
+
+			OnModelCreatingPartial (modelBuilder);
+		}
+
+		partial void OnModelCreatingPartial (ModelBuilder modelBuilder);
+	}
 }

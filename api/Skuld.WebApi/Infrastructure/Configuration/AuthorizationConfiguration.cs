@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Skuld.Shared.DTO.Enum;
+using Skuld.Shared.Dto.Enum;
 using Skuld.Shared.Infrastructure.Constants;
 using Skuld.WebApi.Infrastructure.Authorization;
 
