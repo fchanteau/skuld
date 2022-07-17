@@ -76,7 +76,7 @@ namespace Skuld.Shared.Services
 
 		public async Task<TokenInfoResponse> LoginAsync (LoginPayload payload)
 		{
-			var cryptedPassword = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password));
+			var cryptedPassword = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password)); // secure password
 
 			var user = await this._unitOfWork.UserRepository.TryGetOneAsync (filter: x => x.Email.Equals (payload.Email), navigationProperties: x => x.Passwords);
 			var validPassword = user?.Passwords.Any (x => x.IsActive && x.Value.Equals (cryptedPassword)) ?? false;
