@@ -1,8 +1,8 @@
 export interface DisplayState {
-    login: BasicDisplay;
+    auth: AuthDisplay;
 }
 
-export interface BasicDisplay {
+export interface AuthDisplay {
     show: boolean;
-    loading: boolean;
+    isLogin: boolean;
 }

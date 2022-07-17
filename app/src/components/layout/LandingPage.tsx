@@ -3,13 +3,13 @@ import { Button, Spinner } from 'reactstrap';
 
 
 import { actionCreators } from '@/store';
-import { Login } from '@/components/features/auth';
+import { Auth } from '@/components/features/auth';
 import { SkuldLogo } from '@/components/shared';
 
 export function LandingPage() {
     const dispatch = useDispatch();
     const onClickSignin = () => {
-        dispatch(actionCreators.display.toggleLogin());
+        dispatch(actionCreators.display.toggleAuth());
     }
 
     return (
@@ -29,7 +29,7 @@ export function LandingPage() {
                 </Button>
             </div>
         </div>
-        <Login />
+        <Auth />
       </div>
     )
   }

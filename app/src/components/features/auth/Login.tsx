@@ -1,40 +1,16 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, Form, FormFeedback, FormGroup, Input, Label, Offcanvas, OffcanvasBody, OffcanvasHeader, Spinner } from "reactstrap";
+import { Button, Form, FormFeedback, FormGroup, Input, Label, Spinner } from "reactstrap";
 import { useLoginMutation, UserLoginPayload } from "@/api/users";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { actionCreators } from "@/store";
-import { displayLogin } from "@/store/display";
-import { SkuldLogo, Error } from "@/components/shared";
-
-export function Login() {
-    //const dispatch = useAppDispatch();
-    const login = useAppSelector(displayLogin);
-
-    // const onClickCloseButton = () => {
-    //     dispatch(actionCreators.display.toggleLogin());
-    // }
-
-    return (
-        <Offcanvas
-            direction="end" isOpen={login.show}>
-            <OffcanvasHeader>
-                <SkuldLogo width="90%" />
-                {/* <CloseButton onClick={onClickCloseButton} /> */}
-            </OffcanvasHeader>
-            <OffcanvasBody>
-                <LoginForm />
-            </OffcanvasBody>
-        </Offcanvas>
-    );
-}
+import { Error } from "@/components/shared";
 
 interface LoginFormInput {
     email: string;
     password: string;
 }
 
-
-function LoginForm() {
+export function LoginForm() {
     const dispatch = useAppDispatch();
     const [login, { isLoading, error }] = useLoginMutation();   
     const { control, handleSubmit, formState: { errors } } = useForm<LoginFormInput>();

@@ -1,3 +1,3 @@
 import { AppState } from "@/store";
 
-export const displayLogin = (state: AppState) => state.display.login;
+export const getDisplayAuth = (state: AppState) => state.display.auth;

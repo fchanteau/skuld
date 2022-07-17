@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { DisplayState } from "./displayModel";
 
 export const initialState: DisplayState = {
-    login: {
-        loading: false,
-        show: false
+    auth: {
+        show: false,
+        isLogin: true
     }
 }
 
@@ -12,11 +12,11 @@ export const displaySlice = createSlice({
     name: 'display',
     initialState,
     reducers: {
-        toggleLogin: (state) => {
-            state.login.show = !state.login.show;
+        toggleAuth: (state) => {
+            state.auth.show = !state.auth.show;
         },
-        toggleLoginLoading: (state) => {
-            state.login.loading = !state.login.loading;
+        toggleAuthLogin: (state) => {
+            state.auth.isLogin = !state.auth.isLogin;
         }
     }
 });
