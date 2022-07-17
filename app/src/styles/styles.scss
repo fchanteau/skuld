@@ -1,0 +1,35 @@
+@import "_variables.scss";
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+@import "_topbar.scss";
+@import "_sidebar.scss";
+@import "_home.scss";
+
+body {
+  min-height: 100vh;
+  //color: $primary-text-color;
+  font-family: 'Source Sans Pro';
+}
+
+.skuld-height {
+  min-height: calc(100vh - 75px);
+}
+
+.main {
+  background-color: $background-color;
+}
+
+.landing {
+  background-image: url('bg-landing.png');
+  color: $white;
+
+  .overlay {
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .landing-container {
+    z-index: 20;
+  }
+}
