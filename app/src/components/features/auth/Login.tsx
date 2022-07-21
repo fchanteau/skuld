@@ -4,18 +4,27 @@ import { useLoginMutation, UserLoginPayload } from "@/api/users";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { actionCreators } from "@/store";
 import { Error } from "@/components/shared";
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 
-interface LoginFormInput {
+interface LoginInput {
     email: string;
     password: string;
 }
 
-export function LoginForm() {
+const schema: yup.AnyObjectSchema = yup.object({
+    email: yup.string().required("Email is required"),
+    password: yup.string().required("Password is required"),
+}).required();
+
+export function Login() {
     const dispatch = useAppDispatch();
     const [login, { isLoading, error }] = useLoginMutation();   
-    const { control, handleSubmit, formState: { errors } } = useForm<LoginFormInput>();
+    const { control, handleSubmit, formState: { errors } } = useForm<LoginInput>({
+        resolver: yupResolver(schema)
+    });
 
-    const onSubmit: SubmitHandler<LoginFormInput> = async data => {
+    const onSubmit: SubmitHandler<LoginInput> = async data => {
         const payload: UserLoginPayload = {
             email: data.email,
             password: data.password
@@ -30,15 +39,14 @@ export function LoginForm() {
                 <Controller
                     name="email"
                     control={control}
-                    rules={{ required: true, minLength: 8 }}
                     render={({field}) => <Input invalid={errors.email?.type === 'required'} id="email" type="email" {...field} />}
                 />
                 <Label for="email">
                     Email*
                 </Label>
-                {errors.email?.type === 'required' &&
+                {errors.email &&
                     <FormFeedback>
-                        Email is required
+                        {errors.email.message}
                     </FormFeedback>
                 }
             </FormGroup>
@@ -46,15 +54,14 @@ export function LoginForm() {
                 <Controller
                     name="password"
                     control={control}
-                    rules={{ required: true }}
                     render={({field}) => <Input invalid={errors.password?.type === 'required'} id="password" type="password" {...field} />}
                 />
                 <Label for="password">
                     Password*
                 </Label>
-                {errors.password?.type === 'required' &&
+                {errors.password &&
                     <FormFeedback>
-                        Password is required
+                        {errors.password.message}
                     </FormFeedback>
                 }
             </FormGroup>
@@ -65,7 +72,6 @@ export function LoginForm() {
                         "Submit"
                 }
             </Button>
-            
             {error && 
                 <Error error={error} />
             }

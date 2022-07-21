@@ -38,7 +38,7 @@ namespace Skuld.WebApi.Features.Users
 		{
 			var user = await _userService.AddUserAsync (payload);
 
-			return CreatedAtAction (nameof (GetUser), _mapper.Map<UserResponse, UserResponse> (user));
+			return CreatedAtAction (nameof (GetUser), user);
 		}
 
 		[AllowAnonymous]

@@ -3,12 +3,13 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { actionCreators } from "@/store";
 import { getDisplayAuth } from "@/store/display";
 import { Button, Offcanvas, OffcanvasBody, OffcanvasHeader } from "reactstrap";
-import { LoginForm } from "./Login";
+import { Login } from "./Login";
+import { Register } from "./Register";
 
 export function Auth() {
     const dispatch = useAppDispatch();
     const displayAuth = useAppSelector(getDisplayAuth);
-    const form = displayAuth.isLogin ? <LoginForm /> : <></>;
+    const form = displayAuth.isLogin ? <Login /> : <Register />;
 
     const switchForm = () => {
         dispatch(actionCreators.display.toggleAuthLogin());

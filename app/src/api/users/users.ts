@@ -31,6 +31,13 @@ export const usersApi = api.injectEndpoints({
             }),
             transformResponse: (response: BackendTokenInfos) => toTokenInfos(response)
         }),
+        addUser: build.mutation<void, AddUserPayload>({
+            query: (payload) => ({
+                url: 'users',
+                method: 'POST',
+                body: payload
+            })
+        }),
         currentUser: build.query<User, void>({
             query: () => ({
                 url: 'users/me',
@@ -41,4 +48,4 @@ export const usersApi = api.injectEndpoints({
     }),
 });
 
-export const { useLoginMutation, useCurrentUserQuery } = usersApi;
+export const { useLoginMutation, useCurrentUserQuery, useAddUserMutation } = usersApi;
