@@ -4,7 +4,8 @@ import { DisplayState } from "./displayModel";
 export const initialState: DisplayState = {
     auth: {
         show: false,
-        isLogin: true
+        isSignIn: false,
+        isSignUp: false
     }
 }
 
@@ -12,11 +13,22 @@ export const displaySlice = createSlice({
     name: 'display',
     initialState,
     reducers: {
-        toggleAuth: (state) => {
-            state.auth.show = !state.auth.show;
+        showSignIn: (state) => {
+            state.auth.show = true;
+            state.auth.isSignIn = true;
+            state.auth.isSignUp = false;
         },
-        toggleAuthLogin: (state) => {
-            state.auth.isLogin = !state.auth.isLogin;
+        showSignUp: (state) => {
+            state.auth.show = true;
+            state.auth.isSignUp = true;
+            state.auth.isSignIn = false;
+        },
+        hideAuth: (state) => {
+            state.auth = {
+                show: false,
+                isSignIn: false,
+                isSignUp: false
+            };
         }
     }
 });

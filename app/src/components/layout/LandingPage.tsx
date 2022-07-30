@@ -9,7 +9,10 @@ import { SkuldLogo } from '@/components/shared';
 export function LandingPage() {
     const dispatch = useDispatch();
     const onClickSignin = () => {
-        dispatch(actionCreators.display.toggleAuth());
+        dispatch(actionCreators.display.showSignIn());
+    }
+    const onClickSignUp = () => {
+        dispatch(actionCreators.display.showSignUp());
     }
 
     return (
@@ -24,7 +27,7 @@ export function LandingPage() {
                 <Button color="primary" className='mx-1' onClick={onClickSignin}>
                     Sign In
                 </Button>
-                <Button color="primary" className='mx-1' outline>
+                <Button color="primary" className='mx-1' outline onClick={onClickSignUp}>
                     Sign Up
                 </Button>
             </div>

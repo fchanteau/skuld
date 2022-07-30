@@ -22,6 +22,11 @@ export function Error(props: ErrorProps) {
     const message = useMemo(() => {
         if ('status' in error) {
             // you can access all properties of `FetchBaseQueryError` here
+            if (error.status === 'FETCH_ERROR') {
+                console.error(error);
+                return "Oops ! Something bad happened. Contact admin if the problem persist."
+            }
+
            return (error.data as ErrorModel).Detail;
     
           }

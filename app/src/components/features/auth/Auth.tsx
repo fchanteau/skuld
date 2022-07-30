@@ -8,23 +8,28 @@ import { Register } from "./Register";
 
 export function Auth() {
     const dispatch = useAppDispatch();
-    const displayAuth = useAppSelector(getDisplayAuth);
-    const form = displayAuth.isLogin ? <Login /> : <Register />;
+    const { isSignIn, show } = useAppSelector(getDisplayAuth);
+    const form = isSignIn ? <Login /> : <Register />;
 
     const switchForm = () => {
-        dispatch(actionCreators.display.toggleAuthLogin());
+        if (isSignIn) {
+            dispatch(actionCreators.display.showSignUp());
+        }
+        else {
+            dispatch(actionCreators.display.showSignIn());
+        }
     }
 
     return (
         <Offcanvas
-            direction="end" isOpen={displayAuth.show}>
+            direction="end" isOpen={show}>
             <OffcanvasHeader>
                 <SkuldLogo width="90%" />
             </OffcanvasHeader>
             <OffcanvasBody>
                 {form}
                 <hr />
-                <Button className="w-100" color="primary" outline onClick={switchForm}>Create an account</Button>
+                <Button className="w-100" color="primary" outline onClick={switchForm}>{ isSignIn ? "Register now !" : "Already have an account ? Sign in !" }</Button>
             </OffcanvasBody>
         </Offcanvas>
     )

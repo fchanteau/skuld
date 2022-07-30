@@ -4,5 +4,6 @@ export interface DisplayState {
 
 export interface AuthDisplay {
     show: boolean;
-    isLogin: boolean;
+    isSignIn: boolean;
+    isSignUp: boolean;
 }
