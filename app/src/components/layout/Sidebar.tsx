@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { DropdownMenu, DropdownToggle, Nav, NavItem, NavLink, UncontrolledDropdown } from "reactstrap";
+import S from "./Layout.module.scss";
 
 export function Sidebar() {
     const items = itemsMenuBuilder();
 
     return (
-        <Nav vertical className="sidebar shadow position-relative">
+        <Nav vertical className={`${S.sidebar} shadow position-relative`}>
             {items.map((item) => <ItemMenu item={item} key={item.label} />)}
         </Nav>
     );

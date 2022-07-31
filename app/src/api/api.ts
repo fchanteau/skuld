@@ -12,7 +12,7 @@ export const api = createApi({
             // JWT
             const token = (getState() as AppState).auth.tokenInfos?.token;
             if (token) {
-                headers.set('authorization', `Bearer ${token}`);
+                headers.set('Authorization', `Bearer ${token}`);
             }
 
             // default headers
