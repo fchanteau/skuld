@@ -14,14 +14,18 @@ export const displaySlice = createSlice({
     initialState,
     reducers: {
         showSignIn: (state) => {
-            state.auth.show = true;
-            state.auth.isSignIn = true;
-            state.auth.isSignUp = false;
+            state.auth = {
+                show: true,
+                isSignIn: true,
+                isSignUp: false
+            };
         },
         showSignUp: (state) => {
-            state.auth.show = true;
-            state.auth.isSignUp = true;
-            state.auth.isSignIn = false;
+            state.auth = {
+                show: true,
+                isSignIn: false,
+                isSignUp: true
+            };
         },
         hideAuth: (state) => {
             state.auth = {
