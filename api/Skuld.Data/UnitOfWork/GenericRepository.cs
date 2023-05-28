@@ -47,8 +47,8 @@ namespace Skuld.Data.UnitOfWork
 
 		#region GET
 
-		public async Task<IEnumerable<TEntity>> GetCollectionAsync (Expression<Func<TEntity, bool>> filter = null,
-			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+		public async Task<IEnumerable<TEntity>> GetCollectionAsync (Expression<Func<TEntity, bool>>? filter = null,
+			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
 			int? skip = null,
 			int? take = null,
 			bool trackingEnabled = false,
@@ -90,8 +90,8 @@ namespace Skuld.Data.UnitOfWork
 		}
 
 		public async Task<IEnumerable<TResult>> GetCollectionAsync<TResult> (Expression<Func<TEntity, TResult>> selector,
-			Expression<Func<TEntity, bool>> filter = null,
-			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+			Expression<Func<TEntity, bool>>? filter = null,
+			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
 			int? skip = null,
 			int? take = null,
 			bool trackingEnabled = false,
@@ -132,8 +132,8 @@ namespace Skuld.Data.UnitOfWork
 			return await query.Select (selector).ToListAsync ();
 		}
 
-		public virtual Task<TEntity> TryGetOneAsync (
-			Expression<Func<TEntity, bool>> filter = null,
+		public virtual Task<TEntity?> TryGetOneAsync (
+			Expression<Func<TEntity, bool>>? filter = null,
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties)
 		{
@@ -157,9 +157,9 @@ namespace Skuld.Data.UnitOfWork
 			return query.SingleOrDefaultAsync ();
 		}
 
-		public virtual Task<TResult> TryGetOneAsync<TResult> (
+		public virtual Task<TResult?> TryGetOneAsync<TResult> (
 			Expression<Func<TEntity, TResult>> selector,
-			Expression<Func<TEntity, bool>> filter = null,
+			Expression<Func<TEntity, bool>>? filter = null,
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties) where TResult : class
 		{
@@ -183,9 +183,9 @@ namespace Skuld.Data.UnitOfWork
 			return query.Select (selector).SingleOrDefaultAsync ();
 		}
 
-		public virtual Task<TEntity> TryGetFirstAsync (
-			Expression<Func<TEntity, bool>> filter = null,
-			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+		public virtual Task<TEntity?> TryGetFirstAsync (
+			Expression<Func<TEntity, bool>>? filter = null,
+			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties)
 		{
@@ -214,9 +214,9 @@ namespace Skuld.Data.UnitOfWork
 			return query.FirstOrDefaultAsync ();
 		}
 
-		public virtual Task<TResult> TryGetFirstAsync<TResult> (
+		public virtual Task<TResult?> TryGetFirstAsync<TResult> (
 			Expression<Func<TEntity, TResult>> selector,
-			Expression<Func<TEntity, bool>> filter = null,
+			Expression<Func<TEntity, bool>>? filter = null,
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties) where TResult : class
 		{
@@ -240,12 +240,12 @@ namespace Skuld.Data.UnitOfWork
 			return query.Select (selector).FirstOrDefaultAsync ();
 		}
 
-		public virtual Task<TEntity> TryGetByIdAsync (object id)
+		public virtual Task<TEntity?> TryGetByIdAsync (object id)
 		{
 			return DbSet.FindAsync (id).AsTask ();
 		}
 
-		public virtual Task<int> CountAsync (Expression<Func<TEntity, bool>> filter = null)
+		public virtual Task<int> CountAsync (Expression<Func<TEntity, bool>>? filter = null)
 		{
 			IQueryable<TEntity> query = DbSet;
 
@@ -257,7 +257,7 @@ namespace Skuld.Data.UnitOfWork
 			return query.CountAsync ();
 		}
 
-		public virtual Task<bool> AnyAsync (Expression<Func<TEntity, bool>> filter = null)
+		public virtual Task<bool> AnyAsync (Expression<Func<TEntity, bool>>? filter = null)
 		{
 			IQueryable<TEntity> query = DbSet;
 

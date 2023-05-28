@@ -51,18 +51,19 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 			httpContext.Response.ContentType = "application/json";
 			httpContext.Response.StatusCode = (int)ex.HttpStatusCode;
 
-			string message;
+			string? message;
 			if (ex.Parameters is null)
 			{
 				message = ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ());
 			}
 			else if (ex.SkuldExceptionType == SkuldExceptionType.ValidationFailed)
 			{
-				message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()), string.Join (" | ", ex.Parameters));
+				// TODO FCU : better handling here
+				message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()) ?? throw new Exception (), string.Join (" | ", ex.Parameters));
 			}
 			else
 			{
-				message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()), ex.Parameters);
+				message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()) ?? throw new Exception (), ex.Parameters);
 			}
 
 			_logger.LogError (message);
@@ -82,7 +83,7 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 			httpContext.Response.ContentType = "application/json";
 			httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-			string message = _hostingEnvironment.IsDevelopment () ? $"{exception.Message} {exception.StackTrace}" : "Internal Server Error not handled by the system.";
+			var message = _hostingEnvironment.IsDevelopment () ? $"{exception.Message} {exception.StackTrace}" : "Internal Server Error not handled by the system.";
 
 			_logger.LogError (message);
 

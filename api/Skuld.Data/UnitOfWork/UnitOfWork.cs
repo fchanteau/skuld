@@ -20,9 +20,9 @@ namespace Skuld.Data.UnitOfWork
 		private readonly SkuldContext _context;
 		private bool _disposed;
 
-		private GenericRepository<User> _userRepository;
-		private GenericRepository<RefreshToken> _refreshTokenRepository;
-		private GenericRepository<Password> _passwordRepository;
+		private GenericRepository<User>? _userRepository;
+		private GenericRepository<RefreshToken>? _refreshTokenRepository;
+		private GenericRepository<Password>? _passwordRepository;
 
 		#endregion;
 

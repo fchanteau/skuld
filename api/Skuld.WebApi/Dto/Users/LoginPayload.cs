@@ -6,9 +6,9 @@ namespace Skuld.WebApi.Dto.Users
 	{
 		[Required]
 		[RegularExpression (@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")]
-		public string Email { get; set; }
+		public string? Email { get; set; }
 
 		[Required]
-		public string Password { get; set; }
+		public string? Password { get; set; }
 	}
 }

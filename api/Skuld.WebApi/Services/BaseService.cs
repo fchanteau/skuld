@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Skuld.Data.UnitOfWork;
+﻿using Skuld.Data.UnitOfWork;
 
 namespace Skuld.WebApi.Services
 {
@@ -8,7 +7,6 @@ namespace Skuld.WebApi.Services
 		#region Private properties
 
 		protected readonly IUnitOfWork UnitOfWork;
-		public IMapper Mapper;
 
 		#endregion
 

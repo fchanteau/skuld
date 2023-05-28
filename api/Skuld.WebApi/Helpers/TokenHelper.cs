@@ -13,7 +13,8 @@ namespace Skuld.WebApi.Helpers
 	{
 		public static string CreateToken (User user, JwtOptions options)
 		{
-			var key = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (options.SecretKey));
+			// TODO FCU : Maybe better handling here ?
+			var key = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (options.SecretKey ?? throw new Exception ("No Secret key found in settings")));
 			var credentials = new SigningCredentials (key, SecurityAlgorithms.HmacSha256);
 
 			var token = new JwtSecurityToken (options.Issuer,

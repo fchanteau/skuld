@@ -9,9 +9,9 @@ namespace Skuld.WebApi.Exceptions
 
 		public SkuldExceptionType SkuldExceptionType { get; }
 
-		public string[] Parameters { get; }
+		public string?[] Parameters { get; }
 
-		public SkuldException (HttpStatusCode httpStatusCode, SkuldExceptionType skuldExceptionType, params string[] parameters)
+		public SkuldException (HttpStatusCode httpStatusCode, SkuldExceptionType skuldExceptionType, params string?[] parameters)
 		{
 			HttpStatusCode = httpStatusCode;
 			SkuldExceptionType = skuldExceptionType;
