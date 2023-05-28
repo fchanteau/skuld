@@ -1,6 +1,6 @@
-﻿using Skuld.Shared.Dto.Enum;
+﻿using Skuld.WebApi.Dto.Enum;
 
-namespace Skuld.Shared.Dto.Users
+namespace Skuld.WebApi.Dto.Users
 {
 	public class UserResponse
 	{

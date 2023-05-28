@@ -3,18 +3,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
-using Skuld.Shared.Dto.Users;
-using Skuld.Shared.Exceptions;
-using Skuld.Shared.Helpers;
-using Skuld.Shared.Infrastructure.Configuration.Options;
-using Skuld.Shared.MappingProfiles;
+using Skuld.WebApi.Dto.Users;
+using Skuld.WebApi.Exceptions;
+using Skuld.WebApi.Helpers;
+using Skuld.WebApi.Infrastructure.Configuration.Options;
+using Skuld.WebApi.MappingProfiles;
 using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skuld.Shared.Services
+namespace Skuld.WebApi.Services
 {
 	public class UserService : BaseService
 	{

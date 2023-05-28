@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Skuld.Shared.Dto.Enum;
-using Skuld.Shared.Infrastructure.Constants;
+using Skuld.WebApi.Dto.Enum;
 using Skuld.WebApi.Infrastructure.Authorization;
+using Skuld.WebApi.Infrastructure.Constants;
 
 namespace Skuld.WebApi.Infrastructure.Configuration
 {
-    public static class AuthorizationConfiguration
+	public static class AuthorizationConfiguration
     {
         public static IServiceCollection AddCustomAuthorization(this IServiceCollection services)
         {

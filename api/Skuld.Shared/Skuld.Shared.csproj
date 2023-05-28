@@ -12,23 +12,4 @@
     <ProjectReference Include="..\Skuld.Data\Skuld.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Ressources\ErrorMessage.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ErrorMessage.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Ressources\ErrorMessage.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ErrorMessage.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MappingProfiles\" />
-  </ItemGroup>
-
 </Project>

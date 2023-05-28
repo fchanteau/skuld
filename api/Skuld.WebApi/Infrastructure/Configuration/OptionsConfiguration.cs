@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Skuld.Shared.Infrastructure.Configuration.Options;
+using Skuld.WebApi.Infrastructure.Configuration.Options;
 
 namespace Skuld.WebApi.Infrastructure.Configuration
 {
-    public static class OptionsConfiguration
+	public static class OptionsConfiguration
     {
         public static IServiceCollection AddCustomOptions(this IServiceCollection services, IConfiguration configuration)
         {

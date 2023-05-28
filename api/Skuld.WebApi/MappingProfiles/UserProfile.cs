@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Skuld.Data.Entities;
-using Skuld.Shared.Dto.Enum;
-using Skuld.Shared.Dto.Users;
+using Skuld.WebApi.Dto.Enum;
+using Skuld.WebApi.Dto.Users;
 
-namespace Skuld.Shared.MappingProfiles
+namespace Skuld.WebApi.MappingProfiles
 {
 	public class UserProfile : Profile
 	{

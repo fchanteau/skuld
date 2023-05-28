@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Skuld.Shared.Ressources {
+namespace Skuld.WebApi.Ressources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Skuld.Shared.Ressources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Skuld.Shared.Ressources.ErrorMessage", typeof(ErrorMessage).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Skuld.WebApi.Ressources.ErrorMessage", typeof(ErrorMessage).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

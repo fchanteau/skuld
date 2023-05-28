@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Skuld.Shared.Dto.Enum;
+using Skuld.WebApi.Dto.Enum;
 
 namespace Skuld.WebApi.Infrastructure.Authorization
 {
-    public class RoleLevelRequirement : IAuthorizationRequirement
+	public class RoleLevelRequirement : IAuthorizationRequirement
     {
         public string ClaimType { get; set; }
 
