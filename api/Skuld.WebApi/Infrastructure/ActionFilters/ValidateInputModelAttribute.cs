@@ -12,13 +12,19 @@ namespace Skuld.WebApi.Infrastructure.ActionFilters
 		{
 			var model = context.ActionArguments.FirstOrDefault ().Value;
 
-			if (!this.Validate (model, out var validationResults))
+			// TODO FCU : check this exception and maybe create SkuldExceptionType
+			if (model is null)
+			{
+				throw new SkuldException (System.Net.HttpStatusCode.BadRequest, SkuldExceptionType.ValidationFailed);
+			}
+
+			if (!Validate (model, out var validationResults))
 			{
 				throw new SkuldException (System.Net.HttpStatusCode.BadRequest, SkuldExceptionType.ValidationFailed, validationResults.Select (x => x.ErrorMessage).ToArray ());
 			}
 		}
 
-		protected bool Validate<T> (T obj, out ICollection<ValidationResult> results)
+		protected bool Validate<T> (T obj, out ICollection<ValidationResult> results) where T : notnull
 		{
 			results = new List<ValidationResult> ();
 

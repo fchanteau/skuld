@@ -25,21 +25,21 @@ namespace Skuld.WebApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices (IServiceCollection services)
 		{
-			services.AddDbContext<SkuldContext> (options => options.UseSqlServer (Configuration.GetConnectionString ("Skuld"),
+			services.AddDbContext<SkuldContext> (options => options.UseSqlServer (Configuration.GetConnectionString ("Skuld") ?? throw new System.Exception ("No connectrion string found"),
 				sqloptions => sqloptions.EnableRetryOnFailure ()));
 
 			services.AddCustomDependencyInjection ();
 
-			services.AddCustomSwaggerGen (this.Configuration);
+			services.AddCustomSwaggerGen (Configuration);
 
 			services.AddControllers (options =>
 			{
 				options.InputFormatters.Insert (0, GetJsonPatchInputFormatter ());
 			});
 
-			services.AddCustomOptions (this.Configuration);
+			services.AddCustomOptions (Configuration);
 
-			services.AddCustomAuthentication (this.Configuration);
+			services.AddCustomAuthentication (Configuration);
 
 			services.AddCustomAuthorization ();
 
@@ -83,7 +83,7 @@ namespace Skuld.WebApi
 				endpoints.MapControllers ();
 			});
 
-			app.UseCustomSwagger (this.Configuration);
+			app.UseCustomSwagger (Configuration);
 		}
 
 		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter ()

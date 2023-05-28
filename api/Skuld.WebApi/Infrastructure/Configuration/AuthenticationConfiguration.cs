@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Skuld.WebApi.Infrastructure.Configuration.Options;
+using System;
 using System.Text;
 
 namespace Skuld.WebApi.Infrastructure.Configuration
@@ -26,7 +27,7 @@ namespace Skuld.WebApi.Infrastructure.Configuration
 							ValidateIssuerSigningKey = true,
 							ValidIssuer = jwtOptions.Issuer,
 							ValidAudience = jwtOptions.Audience,
-							IssuerSigningKey = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (jwtOptions.SecretKey)),
+							IssuerSigningKey = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (jwtOptions.SecretKey ?? throw new Exception ("No Secret key found in settings"))), // TODO FCU : better handling here ?
 						};
 					});
 

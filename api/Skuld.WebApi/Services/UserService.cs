@@ -27,8 +27,9 @@ namespace Skuld.WebApi.Services
 
 	public class UserService : BaseService, IUserService
 	{
-		private readonly JwtOptions jwtOptions;
+		private readonly JwtOptions _jwtOptions;
 		private readonly ILogger<UserService> _logger;
+		private readonly IMapper _mapper;
 
 		#region Constructor
 
@@ -41,8 +42,8 @@ namespace Skuld.WebApi.Services
 
 			config.AssertConfigurationIsValid ();
 
-			Mapper = new Mapper (config);
-			this.jwtOptions = jwtOptions.Value;
+			_mapper = new Mapper (config);
+			_jwtOptions = jwtOptions.Value;
 			_logger = logger;
 		}
 
@@ -57,7 +58,7 @@ namespace Skuld.WebApi.Services
 			if (userAlreadyExist)
 				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserAlreadyExist, payload.Email);
 
-			var user = Mapper.Map<AddUserPayload, User> (payload);
+			var user = _mapper.Map<AddUserPayload, User> (payload);
 
 			// insert user
 			UnitOfWork.UserRepository.Insert (user);
@@ -67,7 +68,7 @@ namespace Skuld.WebApi.Services
 			// create password
 			var password = new Password
 			{
-				Value = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password)),
+				Value = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password ?? throw new Exception ())), // TODO FCU : better handling here with generic exception
 				UserId = user.UserId,
 			};
 			UnitOfWork.PasswordRepository.Insert (password);
@@ -80,21 +81,27 @@ namespace Skuld.WebApi.Services
 
 			var userCreated = await UnitOfWork.UserRepository.TryGetByIdAsync (user.UserId);
 
-			return Mapper.Map<User, UserResponse> (userCreated);
+			if (userCreated is null)
+			{
+				// TODO FCU : better handling here, return custom error ?
+				throw new Exception ();
+			}
+
+			return _mapper.Map<User, UserResponse> (userCreated);
 		}
 
 		public async Task<TokenInfoResponse> LoginAsync (LoginPayload payload)
 		{
-			var cryptedPassword = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password));
+			var cryptedPassword = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password ?? ""));
 
 			var user = await UnitOfWork.UserRepository.TryGetOneAsync (filter: x => x.Email.Equals (payload.Email), navigationProperties: x => x.Passwords);
-			var validPassword = user?.Passwords.Any (x => x.IsActive && x.Value.Equals (cryptedPassword)) ?? false;
+			var validPassword = user?.Passwords.Any (x => x.IsActive && x.Value == cryptedPassword) ?? false;
 			if (user is null || !validPassword)
 			{
 				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
 			}
 
-			var token = TokenHelper.CreateToken (user, jwtOptions);
+			var token = TokenHelper.CreateToken (user, _jwtOptions);
 
 			var refreshToken = await UnitOfWork.RefreshTokenRepository.TryGetFirstAsync (
 				filter: x => x.UserId == user.UserId,
@@ -121,12 +128,11 @@ namespace Skuld.WebApi.Services
 
 		public async Task<UserResponse> GetUserAsync (long userId)
 		{
-			//var user = await this._unitOfWork.UserRepository.TryGetByIdAsync(userId);
 			var user = await UnitOfWork.UserRepository.TryGetFirstAsync (user => user.UserId == userId);
 			if (user is null)
 				throw new SkuldException (HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound);
 
-			return Mapper.Map<User, UserResponse> (user);
+			return _mapper.Map<User, UserResponse> (user);
 		}
 
 		public async Task<string> ValidRefreshToken (long userId, RefreshTokenPayload payload)
@@ -140,7 +146,8 @@ namespace Skuld.WebApi.Services
 
 			var user = await UnitOfWork.UserRepository.TryGetByIdAsync (userId);
 
-			return TokenHelper.CreateToken (user, jwtOptions);
+			// TODO FCU : better handling here
+			return TokenHelper.CreateToken (user!, _jwtOptions);
 		}
 
 		public async Task<bool> UpdateUserAsync (UserResponse user)
@@ -148,7 +155,7 @@ namespace Skuld.WebApi.Services
 			try
 			{
 				UnitOfWork.UserRepository.Update (
-				Mapper.Map<UserResponse, User> (user));
+				_mapper.Map<UserResponse, User> (user));
 
 				return await UnitOfWork.SaveChangesAsync () > 0;
 			}

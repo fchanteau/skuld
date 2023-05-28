@@ -7,17 +7,17 @@ namespace Skuld.WebApi.Dto.Users
 		[Required]
 		[MaxLength (255)]
 		[RegularExpression (@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")]
-		public string Email { get; set; }
+		public string? Email { get; set; }
 
 		[Required]
-		public string Password { get; set; }
-
-		[Required]
-		[MaxLength (255)]
-		public string FirstName { get; set; }
+		public string? Password { get; set; }
 
 		[Required]
 		[MaxLength (255)]
-		public string LastName { get; set; }
+		public string? FirstName { get; set; }
+
+		[Required]
+		[MaxLength (255)]
+		public string? LastName { get; set; }
 	}
 }
