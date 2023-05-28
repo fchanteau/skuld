@@ -8,8 +8,8 @@ namespace Skuld.WebApi.Infrastructure.Configuration
 	{
 		public static IServiceCollection AddCustomDependencyInjection (this IServiceCollection services)
 		{
-			services.AddSingleton<IUnitOfWork, UnitOfWork> ()
-				.AddSingleton<IUserService, UserService> ();
+			services.AddScoped<IUnitOfWork, UnitOfWork> ();
+			services.AddScoped<IUserService, UserService> ();
 
 			return services;
 		}

@@ -6,9 +6,9 @@ namespace Skuld.Data.UnitOfWork
 {
 	public interface IUnitOfWork
 	{
-		GenericRepository<User> UserRepository { get; }
-		GenericRepository<RefreshToken> RefreshTokenRepository { get; }
-		GenericRepository<Password> PasswordRepository { get; }
+		IGenericRepository<User> UserRepository { get; }
+		IGenericRepository<RefreshToken> RefreshTokenRepository { get; }
+		IGenericRepository<Password> PasswordRepository { get; }
 		Task<int> SaveChangesAsync ();
 
 	}
@@ -20,9 +20,9 @@ namespace Skuld.Data.UnitOfWork
 		private readonly SkuldContext _context;
 		private bool _disposed;
 
-		private GenericRepository<User>? _userRepository;
-		private GenericRepository<RefreshToken>? _refreshTokenRepository;
-		private GenericRepository<Password>? _passwordRepository;
+		private IGenericRepository<User>? _userRepository;
+		private IGenericRepository<RefreshToken>? _refreshTokenRepository;
+		private IGenericRepository<Password>? _passwordRepository;
 
 		#endregion;
 
@@ -37,14 +37,14 @@ namespace Skuld.Data.UnitOfWork
 
 		#region Accessors
 
-		public GenericRepository<User> UserRepository =>
+		public IGenericRepository<User> UserRepository =>
 			_userRepository ??= new GenericRepository<User> (_context);
 
 
-		public GenericRepository<RefreshToken> RefreshTokenRepository
+		public IGenericRepository<RefreshToken> RefreshTokenRepository
 			=> _refreshTokenRepository ??= new GenericRepository<RefreshToken> (_context);
 
-		public GenericRepository<Password> PasswordRepository
+		public IGenericRepository<Password> PasswordRepository
 			=> _passwordRepository ??= new GenericRepository<Password> (_context);
 
 
