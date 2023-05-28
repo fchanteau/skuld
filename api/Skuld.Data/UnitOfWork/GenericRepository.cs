@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Skuld.Data.UnitOfWork
 {
-	public class GenericRepository<TEntity> where TEntity : class, IEntity
+	public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IEntity
 	{
 		#region Properties
-
-		protected SkuldContext _context;
-		protected DbSet<TEntity> _dbSet;
+		public SkuldContext Context { get; set; }
+		public DbSet<TEntity> DbSet { get; set; }
 
 		#endregion
 
@@ -21,8 +20,8 @@ namespace Skuld.Data.UnitOfWork
 
 		public GenericRepository (SkuldContext context)
 		{
-			_context = context;
-			_dbSet = _context.Set<TEntity> ();
+			Context = context;
+			DbSet = Context.Set<TEntity> ();
 		}
 
 		#endregion
@@ -31,17 +30,17 @@ namespace Skuld.Data.UnitOfWork
 
 		public void Insert (TEntity entity)
 		{
-			_dbSet.Add (entity);
+			DbSet.Add (entity);
 		}
 
 		public void Update (TEntity entity)
 		{
-			_context.Entry (entity).State = EntityState.Modified;
+			Context.Entry (entity).State = EntityState.Modified;
 		}
 
 		public void Delete (TEntity entity)
 		{
-			_dbSet.Remove (entity);
+			DbSet.Remove (entity);
 		}
 
 		#endregion
@@ -55,7 +54,7 @@ namespace Skuld.Data.UnitOfWork
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties)
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -98,7 +97,7 @@ namespace Skuld.Data.UnitOfWork
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties) where TResult : class
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -138,7 +137,7 @@ namespace Skuld.Data.UnitOfWork
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties)
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -164,7 +163,7 @@ namespace Skuld.Data.UnitOfWork
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties) where TResult : class
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -190,7 +189,7 @@ namespace Skuld.Data.UnitOfWork
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties)
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -221,7 +220,7 @@ namespace Skuld.Data.UnitOfWork
 			bool trackingEnabled = false,
 			params Expression<Func<TEntity, object>>[] navigationProperties) where TResult : class
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -243,12 +242,12 @@ namespace Skuld.Data.UnitOfWork
 
 		public virtual Task<TEntity> TryGetByIdAsync (object id)
 		{
-			return _dbSet.FindAsync (id).AsTask ();
+			return DbSet.FindAsync (id).AsTask ();
 		}
 
 		public virtual Task<int> CountAsync (Expression<Func<TEntity, bool>> filter = null)
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -260,7 +259,7 @@ namespace Skuld.Data.UnitOfWork
 
 		public virtual Task<bool> AnyAsync (Expression<Func<TEntity, bool>> filter = null)
 		{
-			IQueryable<TEntity> query = _dbSet;
+			IQueryable<TEntity> query = DbSet;
 
 			if (filter != null)
 			{
@@ -272,7 +271,7 @@ namespace Skuld.Data.UnitOfWork
 
 		public IQueryable<TEntity> AsQueryable ()
 		{
-			return this._dbSet.AsQueryable ();
+			return DbSet.AsQueryable ();
 		}
 
 		#endregion

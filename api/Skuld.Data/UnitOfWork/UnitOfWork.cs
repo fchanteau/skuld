@@ -1,9 +1,19 @@
 ﻿using Skuld.Data.Entities;
 using System;
+using System.Threading.Tasks;
 
 namespace Skuld.Data.UnitOfWork
 {
-	public class UnitOfWork : IDisposable
+	public interface IUnitOfWork
+	{
+		GenericRepository<User> UserRepository { get; }
+		GenericRepository<RefreshToken> RefreshTokenRepository { get; }
+		GenericRepository<Password> PasswordRepository { get; }
+		Task<int> SaveChangesAsync ();
+
+	}
+
+	public class UnitOfWork : IUnitOfWork, IDisposable
 	{
 		#region Private Properties
 
@@ -27,41 +37,15 @@ namespace Skuld.Data.UnitOfWork
 
 		#region Accessors
 
-		public GenericRepository<User> UserRepository
-		{
-			get
-			{
-				if (_userRepository is null)
-				{
-					_userRepository = new GenericRepository<User> (_context);
-				}
-				return _userRepository;
-			}
-		}
+		public GenericRepository<User> UserRepository =>
+			_userRepository ??= new GenericRepository<User> (_context);
+
 
 		public GenericRepository<RefreshToken> RefreshTokenRepository
-		{
-			get
-			{
-				if (_refreshTokenRepository is null)
-				{
-					_refreshTokenRepository = new GenericRepository<RefreshToken> (_context);
-				}
-				return _refreshTokenRepository;
-			}
-		}
+			=> _refreshTokenRepository ??= new GenericRepository<RefreshToken> (_context);
 
 		public GenericRepository<Password> PasswordRepository
-		{
-			get
-			{
-				if (_passwordRepository is null)
-				{
-					_passwordRepository = new GenericRepository<Password> (_context);
-				}
-				return _passwordRepository;
-			}
-		}
+			=> _passwordRepository ??= new GenericRepository<Password> (_context);
 
 
 		#endregion
@@ -90,9 +74,9 @@ namespace Skuld.Data.UnitOfWork
 
 		#region Public methods
 
-		public int Save ()
+		public Task<int> SaveChangesAsync ()
 		{
-			return _context.SaveChanges ();
+			return _context.SaveChangesAsync ();
 		}
 
 		#endregion
