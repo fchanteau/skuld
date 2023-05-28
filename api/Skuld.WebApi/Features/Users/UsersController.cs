@@ -100,7 +100,7 @@ namespace Skuld.WebApi.Features.Users
 
 			patch.ApplyTo (existedUser);
 
-			_userService.UpdateUser (existedUser);
+			await _userService.UpdateUserAsync (existedUser);
 
 			return NoContent ();
 		}

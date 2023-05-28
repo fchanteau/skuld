@@ -7,16 +7,16 @@ namespace Skuld.WebApi.Services
 	{
 		#region Private properties
 
-		protected readonly UnitOfWork _unitOfWork;
+		protected readonly IUnitOfWork UnitOfWork;
 		public IMapper Mapper;
 
 		#endregion
 
 		#region Constructor
 
-		public BaseService (UnitOfWork unitOfWork)
+		public BaseService (IUnitOfWork unitOfWork)
 		{
-			_unitOfWork = unitOfWork;
+			UnitOfWork = unitOfWork;
 		}
 
 		#endregion
