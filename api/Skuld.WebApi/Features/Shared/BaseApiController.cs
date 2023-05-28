@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Skuld.Shared.Infrastructure.Constants;
+using Skuld.WebApi.Infrastructure.Constants;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

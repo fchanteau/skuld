@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Skuld.Shared.Dto.Users
+namespace Skuld.WebApi.Dto.Users
 {
 	public class AddUserPayload
 	{

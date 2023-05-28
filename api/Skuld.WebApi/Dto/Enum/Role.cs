@@ -1,4 +1,4 @@
-﻿namespace Skuld.Shared.Dto.Enum
+﻿namespace Skuld.WebApi.Dto.Enum
 {
 	public enum Role
 	{

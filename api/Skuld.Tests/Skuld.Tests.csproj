@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Skuld.Shared\Skuld.Shared.csproj" />
+    <ProjectReference Include="..\Skuld.WebApi\Skuld.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

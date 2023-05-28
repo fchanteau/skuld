@@ -1,8 +1,8 @@
-﻿using Skuld.Shared.Dto.Enum;
+﻿using Skuld.WebApi.Dto.Enum;
 
 namespace Skuld.WebApi.Infrastructure.Authorization
 {
-    public class MinRoleLevelRequirement : RoleLevelRequirement
+	public class MinRoleLevelRequirement : RoleLevelRequirement
     {
         public MinRoleLevelRequirement(string claimType, int level) : base(claimType, level)
         {

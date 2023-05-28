@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Skuld.Shared.Dto.Users;
-using Skuld.Shared.Infrastructure.Constants;
-using Skuld.Shared.Services;
+using Skuld.WebApi.Dto.Users;
 using Skuld.WebApi.Features.Shared;
 using Skuld.WebApi.Infrastructure.ActionFilters;
+using Skuld.WebApi.Infrastructure.Constants;
 using Skuld.WebApi.Infrastructure.Exceptions;
+using Skuld.WebApi.Services;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
