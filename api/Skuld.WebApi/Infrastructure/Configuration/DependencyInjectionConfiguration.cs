@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Skuld.Data.UnitOfWork;
-using Skuld.WebApi.Services;
+using Skuld.WebApi.Features.Auth;
 
 namespace Skuld.WebApi.Infrastructure.Configuration
 {
@@ -9,7 +9,7 @@ namespace Skuld.WebApi.Infrastructure.Configuration
 		public static IServiceCollection AddCustomDependencyInjection (this IServiceCollection services)
 		{
 			services.AddScoped<IUnitOfWork, UnitOfWork> ();
-			services.AddScoped<IUserService, UserService> ();
+			services.AddScoped<IAuthService, AuthService> ();
 
 			return services;
 		}

@@ -1,15 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Skuld.Data;
 using Skuld.WebApi.Infrastructure.Configuration;
-using System.Linq;
 
 namespace Skuld.WebApi
 {
@@ -30,12 +27,11 @@ namespace Skuld.WebApi
 
 			services.AddCustomDependencyInjection ();
 
-			services.AddCustomSwaggerGen (Configuration);
+			services.AddMvc ();
+			services.AddControllers ();
+			services.AddEndpointsApiExplorer ();
 
-			services.AddControllers (options =>
-			{
-				options.InputFormatters.Insert (0, GetJsonPatchInputFormatter ());
-			});
+			services.AddCustomSwaggerGen (Configuration);
 
 			services.AddCustomOptions (Configuration);
 
@@ -48,10 +44,7 @@ namespace Skuld.WebApi
 				options.SuppressModelStateInvalidFilter = true;
 			});
 
-			services.AddRouting (options =>
-			{
-				options.LowercaseUrls = true;
-			});
+
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,22 +77,6 @@ namespace Skuld.WebApi
 			});
 
 			app.UseCustomSwagger (Configuration);
-		}
-
-		private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter ()
-		{
-			var builder = new ServiceCollection ()
-				.AddLogging ()
-				.AddMvc ()
-				.AddNewtonsoftJson ()
-				.Services.BuildServiceProvider ();
-
-			return builder
-				.GetRequiredService<IOptions<MvcOptions>> ()
-				.Value
-				.InputFormatters
-				.OfType<NewtonsoftJsonPatchInputFormatter> ()
-				.First ();
 		}
 	}
 }

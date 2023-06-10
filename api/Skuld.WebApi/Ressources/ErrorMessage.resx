@@ -120,6 +120,9 @@
   <data name="RefreshTokenInvalid" xml:space="preserve">
     <value>Invalid refresh token</value>
   </data>
+  <data name="UserAlreadyExist" xml:space="preserve">
+    <value>Email '{0}' is already used by another account.</value>
+  </data>
   <data name="UserLoginFailed" xml:space="preserve">
     <value>Invalid couple email/password</value>
   </data>

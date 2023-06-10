@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Skuld.WebApi.Dto.Users
+namespace Skuld.WebApi.Features.Auth.Dto
 {
 	public class LoginPayload
 	{

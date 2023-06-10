@@ -1,6 +1,4 @@
-﻿using Skuld.WebApi.Dto.Enum;
-
-namespace Skuld.WebApi.Dto.Users
+﻿namespace Skuld.WebApi.Features.Auth.Dto
 {
 	public class UserResponse
 	{

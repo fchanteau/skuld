@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Ressources;
 using System;
@@ -36,10 +34,6 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 			{
 				await HandleSkuldException (httpContext, ex);
 			}
-			catch (JsonPatchException ex)
-			{
-				await HandleSkuldException (httpContext, new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.JsonPatchException, new string[] { ex.Message }));
-			}
 			catch (Exception ex)
 			{
 				await HandleExceptionAsync (httpContext, ex);
@@ -51,7 +45,7 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 			httpContext.Response.ContentType = "application/json";
 			httpContext.Response.StatusCode = (int)ex.HttpStatusCode;
 
-			string? message;
+			string? message = "";
 			if (ex.Parameters is null)
 			{
 				message = ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ());
@@ -67,14 +61,14 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 			}
 
 			_logger.LogError (message);
-			return httpContext.Response.WriteAsync (new SkuldProblemDetails ()
+			return httpContext.Response.WriteAsJsonAsync (new ProblemDetails ()
 			{
 				Status = httpContext.Response.StatusCode,
 				Title = ex.SkuldExceptionType.ToString (),
 				Detail = message,
 				Type = $"https://httpstatuses.com/{httpContext.Response.StatusCode}",
 				Instance = httpContext.Request.Path
-			}.ToString ());
+			});
 
 		}
 
@@ -87,22 +81,14 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 
 			_logger.LogError (message);
 
-			return httpContext.Response.WriteAsync (new SkuldProblemDetails ()
+			return httpContext.Response.WriteAsJsonAsync (new ProblemDetails ()
 			{
 				Status = httpContext.Response.StatusCode,
 				Title = "InternalServerError",
 				Type = "https://httpstatuses.com/500",
 				Detail = message,
 				Instance = httpContext.Request.Path
-			}.ToString ());
-		}
-	}
-
-	public class SkuldProblemDetails : ProblemDetails
-	{
-		public override string ToString ()
-		{
-			return JsonConvert.SerializeObject (this);
+			});
 		}
 	}
 }

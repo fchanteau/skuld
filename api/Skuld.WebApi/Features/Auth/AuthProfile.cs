@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Skuld.Data.Entities;
-using Skuld.WebApi.Dto.Enum;
-using Skuld.WebApi.Dto.Users;
+using Skuld.WebApi.Features.Auth.Dto;
 
-namespace Skuld.WebApi.MappingProfiles
+namespace Skuld.WebApi.Features.Auth
 {
-	public class UserProfile : Profile
+	public class AuthProfile : Profile
 	{
-		public UserProfile ()
+		public AuthProfile ()
 		{
 			CreateMap<User, UserResponse> ()
 				.ForMember (dest => dest.Role, opt => opt.MapFrom (src => (Role)src.Role))

@@ -3,41 +3,39 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
-using Skuld.WebApi.Dto.Users;
 using Skuld.WebApi.Exceptions;
+using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Helpers;
 using Skuld.WebApi.Infrastructure.Configuration.Options;
-using Skuld.WebApi.MappingProfiles;
 using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skuld.WebApi.Services
+namespace Skuld.WebApi.Features.Auth
 {
-	public interface IUserService
+	public interface IAuthService
 	{
 		Task<UserResponse> AddUserAsync (AddUserPayload payload);
 		Task<TokenInfoResponse> LoginAsync (LoginPayload payload);
 		Task<UserResponse> GetUserAsync (long userId);
 		Task<string> ValidRefreshToken (long userId, RefreshTokenPayload payload);
-		Task<bool> UpdateUserAsync (UserResponse user);
 	}
 
-	public class UserService : BaseService, IUserService
+	public class AuthService : BaseService, IAuthService
 	{
 		private readonly JwtOptions _jwtOptions;
-		private readonly ILogger<UserService> _logger;
+		private readonly ILogger<AuthService> _logger;
 		private readonly IMapper _mapper;
 
 		#region Constructor
 
-		public UserService (IUnitOfWork unitOfWork, IOptions<JwtOptions> jwtOptions, ILogger<UserService> logger) : base (unitOfWork)
+		public AuthService (IUnitOfWork unitOfWork, IOptions<JwtOptions> jwtOptions, ILogger<AuthService> logger) : base (unitOfWork)
 		{
 			var config = new MapperConfiguration (cfg =>
 			{
-				cfg.AddProfile<UserProfile> ();
+				cfg.AddProfile<AuthProfile> ();
 			});
 
 			config.AssertConfigurationIsValid ();
@@ -148,22 +146,6 @@ namespace Skuld.WebApi.Services
 
 			// TODO FCU : better handling here
 			return TokenHelper.CreateToken (user!, _jwtOptions);
-		}
-
-		public async Task<bool> UpdateUserAsync (UserResponse user)
-		{
-			try
-			{
-				UnitOfWork.UserRepository.Update (
-				_mapper.Map<UserResponse, User> (user));
-
-				return await UnitOfWork.SaveChangesAsync () > 0;
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError ($"Error while updating user {user.UserId} : {ex.Message}");
-				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserUpdateFailed);
-			}
 		}
 
 		#endregion

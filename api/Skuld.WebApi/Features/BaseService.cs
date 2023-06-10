@@ -1,6 +1,6 @@
 ﻿using Skuld.Data.UnitOfWork;
 
-namespace Skuld.WebApi.Services
+namespace Skuld.WebApi.Features
 {
 	public abstract class BaseService
 	{

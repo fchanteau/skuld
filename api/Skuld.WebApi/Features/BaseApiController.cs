@@ -5,7 +5,7 @@ using Skuld.WebApi.Infrastructure.Constants;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Skuld.WebApi.Features.Shared
+namespace Skuld.WebApi.Features
 {
 	public abstract class BaseApiController : ControllerBase
 	{

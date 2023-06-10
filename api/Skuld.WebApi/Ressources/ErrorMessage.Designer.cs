@@ -70,6 +70,15 @@ namespace Skuld.WebApi.Ressources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Email &apos;{0}&apos; is already used by another account..
+        /// </summary>
+        public static string UserAlreadyExist {
+            get {
+                return ResourceManager.GetString("UserAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Invalid couple email/password.
         /// </summary>
         public static string UserLoginFailed {
