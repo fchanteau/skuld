@@ -14,25 +14,16 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 		private readonly SkuldContext _context;
 
 		private readonly IGenericRepository<User> _userRepository;
+		private static IEnumerable<User> _users;
 
 		public GenericRepositoryTests ()
 		{
 			_context = Substitute.For<SkuldContext> ();
 
 			//_context.When(x => x.Set<User>()).Do(_ => _userRepository.DbSet = (IQueryable<User>) new List<User> ());
-			var items = new List<User> ()
-			{
-				new ()
-				{
-					Email = "test@test.com",
-					FirstName = "Test",
-					LastName = "Test",
-					Role = 1,
-					UserId = 1,
-				}
-			};
+			_users = FakeUsers ();
 
-			var fakeDbSet = FakeDbSet (items);
+			var fakeDbSet = FakeDbSet (_users);
 
 			_context.Set<User> ().Returns (fakeDbSet);
 			_userRepository = new GenericRepository<User> (_context);
@@ -41,17 +32,92 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 		[Fact]
 		public async Task GetCollectionAsync_Should_Return_All_Items ()
 		{
-			// Given
-
-
-			// When
+			// Given / When
 			var response = await _userRepository.GetCollectionAsync ();
 
 			// Then
 			response.Should ().NotBeEmpty ();
-			response.Should ().HaveCount (1);
-			response.First ().Should ().NotBeNull ();
+			response.Should ().HaveCount (2);
+			response.Should ().BeEquivalentTo (_users);
 		}
+
+		[Fact]
+		public async Task GetCollectionAsync_Should_Return_Filtered_Items ()
+		{
+			// Given / When
+			var response = await _userRepository.GetCollectionAsync (filter: user => user.FirstName == "Test1");
+
+			// Then
+			response.Should ().NotBeEmpty ();
+			response.Should ().HaveCount (1);
+			response.First ().Should ().BeEquivalentTo (_users.First ());
+		}
+
+		[Fact]
+		public async Task GetCollectionAsync_Should_Return_Ordered_Items ()
+		{
+			// Given / When
+			var response = await _userRepository.GetCollectionAsync (orderBy: x => x.OrderByDescending (User => User.UserId));
+
+			// Then
+			response.Should ().NotBeEmpty ();
+			response.Should ().HaveCount (2);
+			response.Should ().BeEquivalentTo (_users.Reverse ());
+		}
+
+		[Fact]
+		public async Task GetCollectionAsync_Should_Return_Items_With_Skip_Applied ()
+		{
+			// Given / When
+			var response = await _userRepository.GetCollectionAsync (skip: 1);
+
+			// Then
+			response.Should ().NotBeEmpty ();
+			response.Should ().HaveCount (1);
+			response.First ().Should ().BeEquivalentTo (_users.ElementAt (1));
+		}
+
+		[Fact]
+		public async Task GetCollectionAsync_Should_Return_Items_With_Take_Applied ()
+		{
+			// Given / When
+			var response = await _userRepository.GetCollectionAsync (take: 1);
+
+			// Then
+			response.Should ().NotBeEmpty ();
+			response.Should ().HaveCount (1);
+			response.First ().Should ().BeEquivalentTo (_users.First ());
+		}
+
+		[Fact]
+		public async Task GetCollectionAsync_Should_Return_Items_With_Select_Transformer ()
+		{
+			// Given
+			var expected = new string[] { "test1@test.com", "test2@test.com" };
+
+			// Given / When
+			var response = await _userRepository.GetCollectionAsync (selector: x => x.Email);
+
+			// Then
+			response.Should ().NotBeEmpty ();
+			response.Should ().HaveCount (2);
+			response.Should ().BeEquivalentTo (expected);
+		}
+
+		// TODO FCU : Check to mock AsNoTracking
+		//[Fact]
+		//public async Task GetCollectionAsync_Should_Return_Items_Tracked ()
+		//{
+		//	// Given / When
+		//	var response = await _userRepository.GetCollectionAsync (trackingEnabled: true);
+
+		//	// Then
+		//	response.Should ().NotBeEmpty ();
+		//	response.Should ().HaveCount (2);
+		//	response.Should ().BeEquivalentTo (_users);
+
+		//	_context.Users.DidNotReceive ().AsNoTracking ();
+		//}
 
 		private DbSet<User> FakeDbSet (IEnumerable<User> data)
 		{
@@ -64,11 +130,50 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 			castMockSet.Expression.Returns (_data.Expression);
 			castMockSet.ElementType.Returns (_data.ElementType);
 			((IAsyncEnumerable<User>)fakeDbSet).GetAsyncEnumerator ().Returns (new TestAsyncEnumerator<User> (_data.GetEnumerator ()));
-			//castMockSet.AsNoTracking ().Returns (castMockSet);
 
 			return fakeDbSet;
-
 		}
+
+		private static IEnumerable<User> FakeUsers () =>
+			new List<User> ()
+			{
+				new ()
+				{
+					Email = "test1@test.com",
+					FirstName = "Test1",
+					LastName = "Test1",
+					Role = 1,
+					UserId = 1,
+					Passwords = new List<Password>
+					{
+						new ()
+						{
+							PasswordId = 1,
+							IsActive = true,
+							Value = "password",
+							CreatedAt = new DateTime(2023, 6, 14)
+						}
+					}
+				},
+				new ()
+				{
+					Email = "test2@test.com",
+					FirstName = "Test2",
+					LastName = "Test2",
+					Role = 2,
+					UserId = 2,
+					Passwords = new List<Password>
+					{
+						new ()
+						{
+							PasswordId = 2,
+							IsActive = true,
+							Value = "password",
+							CreatedAt = new DateTime(2023, 6, 14)
+						}
+					}
+				}
+			};
 	}
 
 	internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
