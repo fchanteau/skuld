@@ -44,14 +44,14 @@ namespace Skuld.WebApi
 				options.SuppressModelStateInvalidFilter = true;
 			});
 
-
+			services.AddRouting (options => options.LowercaseUrls = true);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure (IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			app.UseCors (cors =>
-				cors.WithOrigins ("http://localhost:3000", "http://localhost:4173")
+				cors.WithOrigins ("http://localhost:3000", "http://127.0.0.1:5173")
 					.AllowAnyHeader ()
 					.AllowAnyMethod ()
 					.SetIsOriginAllowedToAllowWildcardSubdomains ()
