@@ -4,24 +4,24 @@ import { useLoginMutation, UserLoginPayload } from "@/api/users";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { actionCreators } from "@/store";
 import { Error } from "@/components/shared";
-import * as yup from "yup";
-import { yupResolver } from '@hookform/resolvers/yup';
+// import * as yup from "yup";
+// import { yupResolver } from '@hookform/resolvers/yup';
 
 interface LoginInput {
     email: string;
     password: string;
 }
 
-const schema: yup.AnyObjectSchema = yup.object({
-    email: yup.string().required("Email is required"),
-    password: yup.string().required("Password is required"),
-}).required();
+// const schema: yup.AnyObjectSchema = yup.object({
+//     email: yup.string().required("Email is required"),
+//     password: yup.string().required("Password is required"),
+// }).required();
 
 export function Login() {
     const dispatch = useAppDispatch();
     const [login, { isLoading, error }] = useLoginMutation();   
     const { control, handleSubmit, formState: { errors } } = useForm<LoginInput>({
-        resolver: yupResolver(schema)
+        //resolver: yupResolver(schema)
     });
 
     const onSubmit: SubmitHandler<LoginInput> = async data => {

@@ -2,8 +2,8 @@ import { AddUserPayload, useAddUserMutation } from "@/api/users";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Alert, Button, Form, FormFeedback, FormGroup, Input, Label, Spinner } from "reactstrap";
 import { Error } from "@/components/shared";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import * as z from 'zod';
+ import { zodResolver } from "@hookform/resolvers/zod";
 
 interface RegisterInput {
     email: string;
@@ -13,19 +13,26 @@ interface RegisterInput {
     firstName: string;
 }
 
-const schema: yup.AnyObjectSchema = yup.object({
-    email: yup.string().required("Email is required"),
-    password: yup.string().required("Password is required"),
-    repeatPassword: yup.string().required("Repeat password is required")
-        .oneOf([yup.ref('password'), null], 'Passwords must match'),
-    lastName: yup.string().required("Lastname is required"),
-    firstName: yup.string().required("Firstname is required"),
-})
+// const schema: yup.AnyObjectSchema = yup.object({
+//     email: yup.string().required("Email is required"),
+//     password: yup.string().required("Password is required"),
+//     repeatPassword: yup.string().required("Repeat password is required")
+//         .oneOf([yup.ref('password'), null], 'Passwords must match'),
+//     lastName: yup.string().required("Lastname is required"),
+//     firstName: yup.string().required("Firstname is required"),
+// })
+
+const schema = z.object({
+    email: z.string().min(1).email(),
+    password: z.string(),
+    lastName: z.string().min(1),
+    firstName: z.string().min(1)
+  });
 
 export function Register() {
     const [addUser, { isLoading, error, isSuccess }] = useAddUserMutation();
     const { control, handleSubmit, formState: { errors } } = useForm<RegisterInput>({
-        resolver: yupResolver(schema)
+        resolver: zodResolver(schema)
     });
 
     const onSubmit: SubmitHandler<RegisterInput> = async data => {
