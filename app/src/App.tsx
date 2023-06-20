@@ -1,22 +1,20 @@
-import { useSelector } from 'react-redux';
-import { Sidebar, TopBar, MainLayout, LandingPage } from '@/components/layout';
-import { isConnected } from '@/store/auth';
+import { Provider, useSelector } from 'react-redux';
+import { store } from './bootstrap';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './pages/router';
+import { StrictMode } from 'react';
 
-function App() {
-  const userIsConnected = useSelector(isConnected);
+const MainContainer = (): JSX.Element => {
+  return <RouterProvider router={router} />
+}
 
-  if (!userIsConnected) {
-    return <LandingPage />
-  }
-
+const App = (): JSX.Element => {
   return (
-    <>
-    <TopBar />
-      <div className='d-flex align-items-stretch'>
-        <Sidebar />
-        <MainLayout />
-      </div>
-    </>
+    <Provider store={store}>
+      <StrictMode>
+        <MainContainer />
+      </StrictMode>
+    </Provider>
   )
 }
 

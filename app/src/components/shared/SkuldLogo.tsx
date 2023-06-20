@@ -1,6 +1,8 @@
 import { ReactComponent as Logo } from '@/svgs/Skuld.svg';
 import { ReactComponent as WhiteLogo } from '@/svgs/Skuld-white.svg';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { isConnected } from '@/store/auth';
 
 interface SkuldLogoProps {
     outline?: boolean;
@@ -17,9 +19,12 @@ const defaultProps: SkuldLogoProps = {
 export function SkuldLogo(props: SkuldLogoProps = defaultProps) {
     const { width, height, outline } = props;
     const navigate = useNavigate();
+    const userIsConnected = useSelector(isConnected);
     
     const onClick = () => {
-        navigate('/');
+        userIsConnected ?
+            navigate('/') :
+            navigate('/landing');
     }
 
     return outline ? <WhiteLogo width={width} height={height} onClick={onClick} /> : <Logo width={width} height={height} onClick={onClick} />

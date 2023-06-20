@@ -4,6 +4,7 @@ import { useLoginMutation, UserLoginPayload } from "@/api/users";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { actionCreators } from "@/store";
 import { Error } from "@/components/shared";
+import { useNavigate } from "react-router-dom";
 // import * as yup from "yup";
 // import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -19,7 +20,8 @@ interface LoginInput {
 
 export function Login() {
     const dispatch = useAppDispatch();
-    const [login, { isLoading, error }] = useLoginMutation();   
+    const [login, { isLoading, error }] = useLoginMutation();
+    const navigate = useNavigate(); 
     const { control, handleSubmit, formState: { errors } } = useForm<LoginInput>({
         //resolver: yupResolver(schema)
     });
@@ -31,6 +33,7 @@ export function Login() {
         };
         const tokenInfos = await login(payload).unwrap();
         dispatch(actionCreators.users.setTokenInfos(tokenInfos));
+        navigate('/');
       };
 
     return (

@@ -15,4 +15,44 @@ body {
   background-color: $background-color;
 }
 
+.landing {
+  color: $white;
+
+  .overlay {
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .landing-container {
+    z-index: 20;
+  }
+}
+
+.sidebar {
+  width: 10%;
+  .nav-link {
+      //color: $primary-text-color;
+      &:hover {
+          color: $primary-color;
+      }
+  }
+}
+
+.topbar {
+  background-color: $primary-color;
+  color: $white;
+  z-index: 2000;
+  height: 75px;
+}
+
+.home {
+  h1 {
+      color: $primary-color;
+  }
+
+  p {
+      color: $secondary-text-color;
+  }
+}
+
 
