@@ -16,7 +16,7 @@ interface ErrorModel {
     Type: string;
 }
 
-export function Error(props: ErrorProps) {
+export function ErrorMessage(props: ErrorProps) {
     const { error } = props;
 
     const message = useMemo(() => {

@@ -3,18 +3,15 @@ import { Button } from 'reactstrap';
 
 
 import { actionCreators } from '@/store';
-import { SkuldLogo } from '@/components/shared';
 import bkg from '@/assets/bg-landing.png';
 import { Auth } from '@/features/auth';
+import { SkuldLogo } from '@/common/components';
+import { useState } from 'react';
+
+export type AuthType = 'SignIn' | 'SignUp' | undefined;
 
 export function LandingPage() {
-    const dispatch = useDispatch();
-    const onClickSignin = () => {
-        dispatch(actionCreators.display.showSignIn());
-    }
-    const onClickSignUp = () => {
-        dispatch(actionCreators.display.showSignUp());
-    }
+    const [authType, setAuthType] = useState(undefined as AuthType);
 
     return (
       <div className='landing min-vh-100 d-flex justify-content-center align-items-center text-center' style={{backgroundImage: `url(${bkg})`}}>
@@ -25,15 +22,19 @@ export function LandingPage() {
         <div className='landing-container'>
             <p className='display-6'>The best companion for small and medium businesses</p>
             <div className="action-buttons">
-                <Button color="primary" className='mx-1' onClick={onClickSignin}>
+                <Button color="primary" className='mx-1' onClick={() => setAuthType('SignIn')}>
                     Sign In
                 </Button>
-                <Button color="primary" className='mx-1' outline onClick={onClickSignUp}>
+                <Button color="primary" className='mx-1' outline onClick={() => setAuthType('SignUp')}>
                     Sign Up
                 </Button>
             </div>
         </div>
-        <Auth />
+        {authType && 
+            <Auth
+                type={authType}
+                onChangeType={setAuthType} />
+        }
       </div>
     )
   }

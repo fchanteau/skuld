@@ -1,3 +1,3 @@
-import { AppState } from "@/store";
+import { AppState } from "@/bootstrap";
 
 export const isConnected = (state: AppState) => state.auth.tokenInfos !== null;

@@ -1,5 +1,5 @@
-import { SkuldLogo } from "@/components/shared";
-import { isConnected } from "@/store/auth";
+import { SkuldLogo } from "@/common/components";
+import { isConnected } from "@/features/auth/auth.selector";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";

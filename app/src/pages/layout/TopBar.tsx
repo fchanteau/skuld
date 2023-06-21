@@ -1,4 +1,4 @@
-import { SkuldLogo } from "@/components/shared";
+import { SkuldLogo } from "@/common/components";
 import { UserInfos } from "@/features/auth";
 
 export function TopBar() {

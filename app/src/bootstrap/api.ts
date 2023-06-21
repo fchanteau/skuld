@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getAppConfig } from "@/config";
-import { AppState } from "@/store";
+import { AppState } from "./store";
 
 const appConfig = getAppConfig();
 

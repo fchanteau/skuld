@@ -1,28 +1,28 @@
-import { SkuldLogo } from "@/components/shared";
-import { useAppDispatch, useAppSelector } from "@/hooks";
-import { actionCreators } from "@/store";
-import { getDisplayAuth } from "@/store/display";
 import { Button, Offcanvas, OffcanvasBody, OffcanvasHeader } from "reactstrap";
 import { Login } from "./Login";
 import { Register } from "./Register";
+import { SkuldLogo } from "@/common/components";
+import { AuthType } from "@/pages/LandingPage";
 
-export function Auth() {
-    const dispatch = useAppDispatch();
-    const { isSignIn, show } = useAppSelector(getDisplayAuth);
+type AuthProps = {
+    type: AuthType;
+    onChangeType: (type: AuthType) => void;
+};
+
+export function Auth(props: AuthProps) {
+    const isSignIn: boolean = props.type === 'SignIn';
+
     const form = isSignIn ? <Login /> : <Register />;
 
     const switchForm = () => {
-        if (isSignIn) {
-            dispatch(actionCreators.display.showSignUp());
-        }
-        else {
-            dispatch(actionCreators.display.showSignIn());
-        }
+        const newType: AuthType = isSignIn ? 'SignUp' : 'SignIn';
+        props.onChangeType(newType);
     }
 
     return (
         <Offcanvas
-            direction="end" isOpen={show}>
+            direction="end"
+            isOpen>
             <OffcanvasHeader>
                 <SkuldLogo width="90%" />
             </OffcanvasHeader>

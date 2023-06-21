@@ -1,4 +1,4 @@
-import { useCurrentUserQuery } from "@/api/users";
+import { useCurrentUserQuery } from "../auth.api";
 
 export function UserInfos() {
     const { data } = useCurrentUserQuery();

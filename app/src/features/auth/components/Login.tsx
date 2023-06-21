@@ -1,10 +1,10 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Form, FormFeedback, FormGroup, Input, Label, Spinner } from "reactstrap";
-import { useLoginMutation, UserLoginPayload } from "@/api/users";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { actionCreators } from "@/store";
-import { Error } from "@/components/shared";
 import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../auth.api";
+import { UserLoginPayload } from "../auth.model";
+import { ErrorMessage } from "@/common/components";
 // import * as yup from "yup";
 // import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -32,7 +32,7 @@ export function Login() {
             password: data.password
         };
         const tokenInfos = await login(payload).unwrap();
-        dispatch(actionCreators.users.setTokenInfos(tokenInfos));
+        //dispatch(actionCreators.users.setTokenInfos(tokenInfos));
         navigate('/');
       };
 
@@ -76,7 +76,7 @@ export function Login() {
                 }
             </Button>
             {error && 
-                <Error error={error} />
+                <ErrorMessage error={error} />
             }
         </Form>
     )

@@ -1,9 +1,10 @@
-import { AddUserPayload, useAddUserMutation } from "@/api/users";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Alert, Button, Form, FormFeedback, FormGroup, Input, Label, Spinner } from "reactstrap";
-import { Error } from "@/components/shared";
 import * as z from 'zod';
  import { zodResolver } from "@hookform/resolvers/zod";
+import { useAddUserMutation } from "../auth.api";
+import { AddUserPayload } from "../auth.model";
+import { ErrorMessage } from "@/common/components";
 
 interface RegisterInput {
     email: string;
@@ -131,7 +132,7 @@ export function Register() {
             </Button>
 
             {error && 
-                <Error error={error} />
+                <ErrorMessage error={error} />
             }
 
             {isSuccess &&

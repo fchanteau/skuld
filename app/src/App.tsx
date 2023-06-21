@@ -1,8 +1,8 @@
-import { Provider, useSelector } from 'react-redux';
-import { store } from './bootstrap';
+import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './pages/router';
 import { StrictMode } from 'react';
+import { store } from './bootstrap';
 
 const MainContainer = (): JSX.Element => {
   return <RouterProvider router={router} />
