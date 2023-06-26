@@ -7,6 +7,10 @@ const rootReducer = combineReducers({
     auth: authSlice.reducer
 });
 
+export const actionCreators = {
+    [authSlice.name]: {...authSlice.actions}
+}
+
 export const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
@@ -14,3 +18,4 @@ export const store = configureStore({
 
 export type AppState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
+export type ActionCreators = typeof actionCreators;

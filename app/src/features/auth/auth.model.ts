@@ -18,5 +18,5 @@ export type UserLoginPayload = {
 export type AddUserPayload = Omit<User, "userId"> & { password: string };
 
 export interface AuthState {
-    tokenInfos: TokenInfos | null;
+    isConnected: boolean;
 }

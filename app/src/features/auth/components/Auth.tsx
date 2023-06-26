@@ -3,6 +3,10 @@ import { Login } from "./Login";
 import { Register } from "./Register";
 import { SkuldLogo } from "@/common/components";
 import { AuthType } from "@/pages/LandingPage";
+import { useSelector } from "react-redux";
+import { isConnected } from "../auth.selector";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 type AuthProps = {
     type: AuthType;
@@ -10,6 +14,15 @@ type AuthProps = {
 };
 
 export function Auth(props: AuthProps) {
+    const navigate = useNavigate();
+    const userIsConnected = useSelector(isConnected);
+
+    useEffect(() => {
+        if (userIsConnected)
+        navigate('/');
+
+    }, [userIsConnected]);
+
     const isSignIn: boolean = props.type === 'SignIn';
 
     const form = isSignIn ? <Login /> : <Register />;

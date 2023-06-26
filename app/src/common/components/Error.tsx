@@ -8,12 +8,12 @@ interface ErrorProps {
 }
 
 interface ErrorModel {
-    Detail: string;
-    Extensions: any;
-    Instance: string;
-    Status: number;
-    Title: string;
-    Type: string;
+    detail: string;
+    extensions: any;
+    instance: string;
+    status: number;
+    title: string;
+    type: string;
 }
 
 export function ErrorMessage(props: ErrorProps) {
@@ -27,12 +27,11 @@ export function ErrorMessage(props: ErrorProps) {
                 return "Oops ! Something bad happened. Contact admin if the problem persist."
             }
 
-           return (error.data as ErrorModel).Detail;
-    
+            return (error.data as ErrorModel).detail;  
           }
           else {
-              // you can access all properties of `SerializedError` here
-              return error.message
+            // you can access all properties of `SerializedError` here
+            return error.message
           }
     }, [error]);
 

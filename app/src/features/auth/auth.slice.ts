@@ -1,19 +1,17 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AuthState, TokenInfos } from "./auth.model";
+import { isTokenInfosInStorage } from "./auth.service";
 
 export const initialState: AuthState = {
-    tokenInfos: null
+    isConnected: isTokenInfosInStorage()
 };
 
 export const authSlice = createSlice({
-    name: 'users',
+    name: 'auth',
     initialState,
     reducers: {
-        setTokenInfos: (state, { payload }: PayloadAction<TokenInfos>) => {
-            state.tokenInfos = {
-                token: payload.token,
-                refreshToken: payload.refreshToken
-            };
+        setConnectedUser: (state, { payload }: PayloadAction<boolean>) => {
+            state.isConnected = payload;
         },
     }
 })

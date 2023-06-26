@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../auth.api";
 import { UserLoginPayload } from "../auth.model";
 import { ErrorMessage } from "@/common/components";
+import { actionCreators } from "@/bootstrap";
+import { saveTokenInfos } from "../auth.service";
 // import * as yup from "yup";
 // import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -31,8 +33,12 @@ export function Login() {
             email: data.email,
             password: data.password
         };
+
         const tokenInfos = await login(payload).unwrap();
-        //dispatch(actionCreators.users.setTokenInfos(tokenInfos));
+
+        saveTokenInfos(tokenInfos);
+        
+        dispatch(actionCreators.auth.setConnectedUser(true));
         navigate('/');
       };
 
