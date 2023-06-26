@@ -25,10 +25,15 @@ interface RegisterInput {
 
 const schema = z.object({
     email: z.string().min(1).email(),
-    password: z.string(),
+    password: z.string().min(1),
+    repeatPassword: z.string().min(1),
     lastName: z.string().min(1),
     firstName: z.string().min(1)
-  });
+  })
+  .refine((data) => data.password === data.repeatPassword, {
+    message: "Passwords don't match",
+    path: ["repeatPassword"],
+});
 
 export function Register() {
     const [addUser, { isLoading, error, isSuccess }] = useAddUserMutation();

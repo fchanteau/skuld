@@ -7,25 +7,25 @@ import { UserLoginPayload } from "../auth.model";
 import { ErrorMessage } from "@/common/components";
 import { actionCreators } from "@/bootstrap";
 import { saveTokenInfos } from "../auth.service";
-// import * as yup from "yup";
-// import { yupResolver } from '@hookform/resolvers/yup';
+import * as z from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface LoginInput {
     email: string;
     password: string;
 }
 
-// const schema: yup.AnyObjectSchema = yup.object({
-//     email: yup.string().required("Email is required"),
-//     password: yup.string().required("Password is required"),
-// }).required();
+const schema = z.object({
+    email: z.string().min(1, { message: 'Email is required' }).email({message: 'Not an email'}),
+    password: z.string().min(1, { message: 'Password is required' })
+});
 
 export function Login() {
     const dispatch = useAppDispatch();
     const [login, { isLoading, error }] = useLoginMutation();
     const navigate = useNavigate(); 
     const { control, handleSubmit, formState: { errors } } = useForm<LoginInput>({
-        //resolver: yupResolver(schema)
+        resolver: zodResolver(schema)
     });
 
     const onSubmit: SubmitHandler<LoginInput> = async data => {
@@ -44,11 +44,12 @@ export function Login() {
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
+            {JSON.stringify(errors.email)}
             <FormGroup floating>
                 <Controller
                     name="email"
                     control={control}
-                    render={({field}) => <Input invalid={errors.email?.type === 'required'} id="email" type="email" {...field} />}
+                    render={({field}) => <Input invalid={errors.email !== undefined} id="email" type="email" {...field} />}
                 />
                 <Label for="email">
                     Email*
@@ -63,7 +64,7 @@ export function Login() {
                 <Controller
                     name="password"
                     control={control}
-                    render={({field}) => <Input invalid={errors.password?.type === 'required'} id="password" type="password" {...field} />}
+                    render={({field}) => <Input invalid={errors.password !== undefined} id="password" type="password" {...field} />}
                 />
                 <Label for="password">
                     Password*
