@@ -1,3 +1,3 @@
-import { AppState } from "@/bootstrap";
+import { type AppState } from "@/bootstrap";
 
 export const isConnected = (state: AppState) => state.auth.isConnected;

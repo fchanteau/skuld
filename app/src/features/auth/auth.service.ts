@@ -1,4 +1,4 @@
-import { TokenInfos } from "./auth.model";
+import { type TokenInfos } from "./auth.model";
 
 export const saveTokenInfos = (tokenInfos: TokenInfos): void => {
     sessionStorage.setItem('token', tokenInfos.token);

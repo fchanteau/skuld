@@ -1,5 +1,6 @@
 import { api } from "@/bootstrap";
-import { AddUserPayload, TokenInfos, User, UserLoginPayload } from "./auth.model";
+
+import { type AddUserPayload, type TokenInfos, type User, type UserLoginPayload } from "./auth.model";
 
 export const authApi = api.injectEndpoints({
     endpoints: (build) => ({

@@ -1,5 +1,5 @@
-import { SerializedError } from "@reduxjs/toolkit";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query/react";
+import { type SerializedError } from "@reduxjs/toolkit";
+import { type FetchBaseQueryError } from "@reduxjs/toolkit/dist/query/react";
 import { useMemo } from "react";
 import { Alert } from "reactstrap";
 

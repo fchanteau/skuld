@@ -21,7 +21,7 @@ function ItemMenu(props: ItemMenuProps) {
     return item.children ? <DropdownItemMenu item={item}/> : <LinkItemMenu item={item} />
 }
 
-interface LinkItemMenuProps extends ItemMenuProps {}
+type LinkItemMenuProps = ItemMenuProps
 
 function LinkItemMenu(props: LinkItemMenuProps) {
     const { item } = props;
@@ -33,7 +33,7 @@ function LinkItemMenu(props: LinkItemMenuProps) {
     )
 }
 
-interface DropdownItemMenuProps extends ItemMenuProps {}
+type DropdownItemMenuProps = ItemMenuProps
 
 function DropdownItemMenu(props: DropdownItemMenuProps) {
     const { item } = props;

@@ -1,8 +1,9 @@
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { isConnected } from '@/features/auth/auth.selector';
 import { ReactComponent as Logo } from '@/svgs/Skuld.svg';
 import { ReactComponent as WhiteLogo } from '@/svgs/Skuld-white.svg';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { isConnected } from '@/features/auth/auth.selector';
 
 interface SkuldLogoProps {
     outline?: boolean;
