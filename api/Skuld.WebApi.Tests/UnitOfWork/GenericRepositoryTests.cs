@@ -119,6 +119,18 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 		//	_context.Users.DidNotReceive ().AsNoTracking ();
 		//}
 
+		[Fact]
+		public async Task TryGetOneAsync_Should_Return_Item ()
+		{
+			// Given
+
+			// When
+			var response = await _userRepository.TryGetOneAsync (filter: x => x.UserId == 1);
+
+			// Then
+			response.UserId.Should ().Be (1);
+		}
+
 		private DbSet<User> FakeDbSet (IEnumerable<User> data)
 		{
 

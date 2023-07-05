@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { SkuldLogo } from '@/common/components';
 import { isConnected } from '@/features/auth/auth.selector';
 
-export function Home() {
+export function DashboardPage() {
   const navigate = useNavigate();
 
   const userIsConnected = useSelector(isConnected);

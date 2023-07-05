@@ -12,12 +12,12 @@ export function LandingPage() {
 
   return (
     <div
-      className="landing min-vh-100 d-flex justify-content-center align-items-center text-center"
+      className="landing min-vh-100 d-flex flex-column justify-content-center align-items-center text-center"
       style={{ backgroundImage: `url(${bkg})` }}
     >
       <div className="overlay position-absolute top-0 start-0 w-100 h-100"></div>
-      <div className="fixed-top">
-        <SkuldLogo width="500" />
+      <div className="landing-logo">
+        <SkuldLogo width="400" />
       </div>
       <div className="landing-container">
         <p className="display-6">The best companion for small and medium businesses</p>

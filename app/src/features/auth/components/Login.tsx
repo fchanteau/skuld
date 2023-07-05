@@ -72,7 +72,7 @@ export function Login() {
         <Label for="password">Password*</Label>
         {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
       </FormGroup>
-      <Button color="primary" className="w-100 mb-3">
+      <Button color="primary" className="mb-3" block>
         {isLoading ? <Spinner color="dark" /> : 'Submit'}
       </Button>
       {error && <ErrorMessage error={error} />}

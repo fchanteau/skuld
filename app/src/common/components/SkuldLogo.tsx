@@ -2,31 +2,26 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { isConnected } from '@/features/auth/auth.selector';
-import { ReactComponent as Logo } from '@/svgs/Skuld.svg';
-import { ReactComponent as WhiteLogo } from '@/svgs/Skuld-white.svg';
+import { ReactComponent as Logo } from '@/svgs/TableTennisHub.svg';
 
 interface SkuldLogoProps {
-    outline?: boolean;
-    width?: string | number;
-    height?: number;
+  width?: string | number;
+  height?: number;
 }
 
 const defaultProps: SkuldLogoProps = {
-    outline: false,
-    width: 200,
-    height: 100
-}
+  width: 200,
+  height: 200,
+};
 
 export function SkuldLogo(props: SkuldLogoProps = defaultProps) {
-    const { width, height, outline } = props;
-    const navigate = useNavigate();
-    const userIsConnected = useSelector(isConnected);
-    
-    const onClick = () => {
-        userIsConnected ?
-            navigate('/') :
-            navigate('/landing');
-    }
+  const { width, height } = props;
+  const navigate = useNavigate();
+  const userIsConnected = useSelector(isConnected);
 
-    return outline ? <WhiteLogo width={width} height={height} onClick={onClick} /> : <Logo width={width} height={height} onClick={onClick} />
+  const onClick = () => {
+    userIsConnected ? navigate('/') : navigate('/landing');
+  };
+
+  return <Logo width={width} height={height} onClick={onClick} />;
 }

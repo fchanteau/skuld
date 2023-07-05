@@ -112,7 +112,7 @@ export function Register() {
         <Label for="repeatPassword">Repeat password*</Label>
         {errors.repeatPassword && <FormFeedback>{errors.repeatPassword.message}</FormFeedback>}
       </FormGroup>
-      <Button color="primary" className="w-100 mb-3">
+      <Button color="primary" className="mb-3" block>
         {isLoading ? <Spinner color="dark" /> : 'Create account'}
       </Button>
 

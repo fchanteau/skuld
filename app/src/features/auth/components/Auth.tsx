@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
@@ -24,7 +24,7 @@ export function Auth(props: AuthProps) {
     if (userIsConnected) navigate('/');
   }, [navigate, userIsConnected]);
 
-  const isSignIn: boolean = props.type === 'SignIn';
+  const isSignIn: boolean = useMemo(() => props.type === 'SignIn', [props.type]);
 
   const form = isSignIn ? <Login /> : <Register />;
 
@@ -34,14 +34,14 @@ export function Auth(props: AuthProps) {
   };
 
   return (
-    <Offcanvas direction="end" isOpen>
+    <Offcanvas direction="end" isOpen fade>
       <OffcanvasHeader>
-        <SkuldLogo width="90%" />
+        <SkuldLogo width="100%" />
       </OffcanvasHeader>
       <OffcanvasBody>
         {form}
         <hr />
-        <Button className="w-100" color="primary" outline onClick={switchForm}>
+        <Button block color="primary" outline onClick={switchForm}>
           {isSignIn ? 'Register now !' : 'Already have an account ? Sign in !'}
         </Button>
       </OffcanvasBody>
