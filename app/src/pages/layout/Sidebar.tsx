@@ -79,7 +79,7 @@ function itemsMenuBuilder(): IItemMenu[] {
     },
     {
       to: '/auth',
-      label: 'Landing',
+      label: 'Auth',
       icon: 'house-door-fill',
     },
     {

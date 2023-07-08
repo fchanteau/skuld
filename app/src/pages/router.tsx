@@ -1,14 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 
+import { AuthPage } from './AuthPage';
 import { DashboardPage } from './DashboardPage';
-import { LandingPage } from './LandingPage';
 import { Layout } from './layout';
 
 export const router = createBrowserRouter([
   {
-    id: 'landing',
+    id: 'auth',
     path: '/auth',
-    element: <LandingPage />,
+    element: <AuthPage />,
   },
   {
     id: 'root',

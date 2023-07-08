@@ -15,23 +15,6 @@ body {
   background-color: $background-color;
 }
 
-.landing {
-  color: $white;
-
-  .overlay {
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .landing-container {
-    z-index: 20;
-  }
-
-  .landing-logo {
-    z-index: 1000;
-  }
-}
-
 .presentation {
   .overlay {
     z-index: 10;

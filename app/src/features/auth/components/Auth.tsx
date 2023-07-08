@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
 import { SkuldLogo } from '@/common/components';
-import { type AuthType } from '@/pages/LandingPage';
+import { type AuthType } from '@/pages/AuthPage';
 
 import { isConnected } from '../auth.selector';
 
