@@ -20,7 +20,7 @@ export function SkuldLogo(props: SkuldLogoProps = defaultProps) {
   const userIsConnected = useSelector(isConnected);
 
   const onClick = () => {
-    userIsConnected ? navigate('/') : navigate('/landing');
+    userIsConnected ? navigate('/') : navigate('/auth');
   };
 
   return <Logo width={width} height={height} onClick={onClick} />;

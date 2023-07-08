@@ -7,7 +7,7 @@ import { Layout } from './layout';
 export const router = createBrowserRouter([
   {
     id: 'landing',
-    path: '/landing',
+    path: '/auth',
     element: <LandingPage />,
   },
   {

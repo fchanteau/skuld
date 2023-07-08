@@ -12,8 +12,7 @@ export function DashboardPage() {
 
   useEffect(() => {
     if (!userIsConnected) {
-      console.log('FCU go to landing');
-      navigate('/landing');
+      navigate('/auth');
     }
   }, [navigate, userIsConnected]);
 

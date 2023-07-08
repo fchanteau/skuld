@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Button, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 import { SkuldLogo } from '@/common/components';
 import { type AuthType } from '@/pages/LandingPage';
@@ -34,17 +34,15 @@ export function Auth(props: AuthProps) {
   };
 
   return (
-    <Offcanvas direction="end" isOpen fade>
-      <OffcanvasHeader>
-        <SkuldLogo width="100%" />
-      </OffcanvasHeader>
-      <OffcanvasBody>
-        {form}
-        <hr />
-        <Button block color="primary" outline onClick={switchForm}>
-          {isSignIn ? 'Register now !' : 'Already have an account ? Sign in !'}
-        </Button>
-      </OffcanvasBody>
-    </Offcanvas>
+    <>
+      <div className="d-flex justify-content-center">
+        <SkuldLogo width={300} />
+      </div>
+      {form}
+      <hr />
+      <Button block color="primary" outline onClick={switchForm}>
+        {isSignIn ? 'Register now !' : 'Already have an account ? Sign in !'}
+      </Button>
+    </>
   );
 }

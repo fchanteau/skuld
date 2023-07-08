@@ -60,65 +60,70 @@ export function Register() {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <FormGroup floating>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => <Input invalid={errors.email !== undefined} id="email" type="email" {...field} />}
-        />
-        <Label for="email">Email*</Label>
-        {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
-      </FormGroup>
-      <FormGroup floating>
-        <Controller
-          name="firstName"
-          control={control}
-          render={({ field }) => (
-            <Input invalid={errors.firstName !== undefined} id="firstName" type="text" {...field} />
-          )}
-        />
-        <Label for="firstName">Firstname*</Label>
-        {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
-      </FormGroup>
-      <FormGroup floating>
-        <Controller
-          name="lastName"
-          control={control}
-          render={({ field }) => <Input invalid={errors.lastName !== undefined} id="lastName" type="text" {...field} />}
-        />
-        <Label for="lastName">LastName*</Label>
-        {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
-      </FormGroup>
-      <FormGroup floating>
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => (
-            <Input invalid={errors.password !== undefined} id="password" type="password" {...field} />
-          )}
-        />
-        <Label for="password">Password*</Label>
-        {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
-      </FormGroup>
-      <FormGroup floating>
-        <Controller
-          name="repeatPassword"
-          control={control}
-          render={({ field }) => (
-            <Input invalid={errors.repeatPassword !== undefined} id="repeatPassword" type="password" {...field} />
-          )}
-        />
-        <Label for="repeatPassword">Repeat password*</Label>
-        {errors.repeatPassword && <FormFeedback>{errors.repeatPassword.message}</FormFeedback>}
-      </FormGroup>
-      <Button color="primary" className="mb-3" block>
-        {isLoading ? <Spinner color="dark" /> : 'Create account'}
-      </Button>
+    <>
+      <h2>Register</h2>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <FormGroup floating>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => <Input invalid={errors.email !== undefined} id="email" type="email" {...field} />}
+          />
+          <Label for="email">Email*</Label>
+          {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
+        </FormGroup>
+        <FormGroup floating>
+          <Controller
+            name="firstName"
+            control={control}
+            render={({ field }) => (
+              <Input invalid={errors.firstName !== undefined} id="firstName" type="text" {...field} />
+            )}
+          />
+          <Label for="firstName">Firstname*</Label>
+          {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
+        </FormGroup>
+        <FormGroup floating>
+          <Controller
+            name="lastName"
+            control={control}
+            render={({ field }) => (
+              <Input invalid={errors.lastName !== undefined} id="lastName" type="text" {...field} />
+            )}
+          />
+          <Label for="lastName">LastName*</Label>
+          {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
+        </FormGroup>
+        <FormGroup floating>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <Input invalid={errors.password !== undefined} id="password" type="password" {...field} />
+            )}
+          />
+          <Label for="password">Password*</Label>
+          {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+        </FormGroup>
+        <FormGroup floating>
+          <Controller
+            name="repeatPassword"
+            control={control}
+            render={({ field }) => (
+              <Input invalid={errors.repeatPassword !== undefined} id="repeatPassword" type="password" {...field} />
+            )}
+          />
+          <Label for="repeatPassword">Repeat password*</Label>
+          {errors.repeatPassword && <FormFeedback>{errors.repeatPassword.message}</FormFeedback>}
+        </FormGroup>
+        <Button color="primary" className="mb-3" block>
+          {isLoading ? <Spinner color="light" /> : 'Create account'}
+        </Button>
 
-      {error && <ErrorMessage error={error} />}
+        {error && <ErrorMessage error={error} />}
 
-      {isSuccess && <Alert color="success">Account created ! You can now log in the website.</Alert>}
-    </Form>
+        {isSuccess && <Alert color="success">Account created ! You can now log in the website.</Alert>}
+      </Form>
+    </>
   );
 }

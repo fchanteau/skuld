@@ -78,7 +78,7 @@ function itemsMenuBuilder(): IItemMenu[] {
       icon: 'speedometer',
     },
     {
-      to: '/landing',
+      to: '/auth',
       label: 'Landing',
       icon: 'house-door-fill',
     },

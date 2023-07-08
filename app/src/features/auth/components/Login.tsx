@@ -50,32 +50,35 @@ export function Login() {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      {JSON.stringify(errors.email)}
-      <FormGroup floating>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => <Input invalid={errors.email !== undefined} id="email" type="email" {...field} />}
-        />
-        <Label for="email">Email*</Label>
-        {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
-      </FormGroup>
-      <FormGroup floating>
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => (
-            <Input invalid={errors.password !== undefined} id="password" type="password" {...field} />
-          )}
-        />
-        <Label for="password">Password*</Label>
-        {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
-      </FormGroup>
-      <Button color="primary" className="mb-3" block>
-        {isLoading ? <Spinner color="dark" /> : 'Submit'}
-      </Button>
-      {error && <ErrorMessage error={error} />}
-    </Form>
+    <>
+      <h2>Login</h2>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        {JSON.stringify(errors.email)}
+        <FormGroup floating>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => <Input invalid={errors.email !== undefined} id="email" type="email" {...field} />}
+          />
+          <Label for="email">Email*</Label>
+          {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
+        </FormGroup>
+        <FormGroup floating>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <Input invalid={errors.password !== undefined} id="password" type="password" {...field} />
+            )}
+          />
+          <Label for="password">Password*</Label>
+          {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+        </FormGroup>
+        <Button color="primary" className="mb-3" block>
+          {isLoading ? <Spinner color="light" /> : 'Submit'}
+        </Button>
+        {error && <ErrorMessage error={error} />}
+      </Form>
+    </>
   );
 }

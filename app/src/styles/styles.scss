@@ -32,8 +32,19 @@ body {
   }
 }
 
+.presentation {
+  .overlay {
+    z-index: 10;
+    background-color: transparentize($primary, 0.1);
+  }
+
+  .presentation-container {
+    z-index: 20;
+  }
+}
+
 .sidebar {
-  background-color: $primary-color;
+  background-color: $primary;
   position: absolute;
   top: 0;
   left: 0;
@@ -44,7 +55,7 @@ body {
     color: $white;
 
     &:hover {
-      background-color: $primary-color-dark;
+      background-color: $primary;
 
       &:after {
         display: inline-block;
@@ -73,10 +84,16 @@ body {
 
 .home {
   h1 {
-    color: $primary-color;
+    color: $primary;
   }
 
   p {
-    color: $secondary-text-color;
+    color: $secondary;
+  }
+}
+
+.auth {
+  .presentation {
+    background-color: $primary;
   }
 }
