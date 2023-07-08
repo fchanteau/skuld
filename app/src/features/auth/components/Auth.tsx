@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Alert, Button } from 'reactstrap';
 
 import { SkuldLogo } from '@/common/components';
 import { type AuthType } from '@/pages/AuthPage';
@@ -17,12 +17,7 @@ type AuthProps = {
 };
 
 export function Auth(props: AuthProps) {
-  const navigate = useNavigate();
   const userIsConnected = useSelector(isConnected);
-
-  useEffect(() => {
-    if (userIsConnected) navigate('/');
-  }, [navigate, userIsConnected]);
 
   const isSignIn: boolean = useMemo(() => props.type === 'SignIn', [props.type]);
 
@@ -32,6 +27,14 @@ export function Auth(props: AuthProps) {
     const newType: AuthType = isSignIn ? 'SignUp' : 'SignIn';
     props.onChangeType(newType);
   };
+
+  if (userIsConnected) {
+    return (
+      <Alert className="d-flex justify-content-center mt-5" color="info">
+        Already logged. <Link to="/">Go to home page</Link>
+      </Alert>
+    );
+  }
 
   return (
     <>

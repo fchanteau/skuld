@@ -53,7 +53,6 @@ export function Login() {
     <>
       <h2>Login</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        {JSON.stringify(errors.email)}
         <FormGroup floating>
           <Controller
             name="email"

@@ -8,11 +8,7 @@ body {
 }
 
 .skuld-height {
-  min-height: calc(100vh - 75px);
-}
-
-.main {
-  background-color: $background-color;
+  min-height: calc(100vh - 62px);
 }
 
 .presentation {
@@ -23,60 +19,5 @@ body {
 
   .presentation-container {
     z-index: 20;
-  }
-}
-
-.sidebar {
-  background-color: $primary;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 10%;
-  z-index: 3000;
-
-  .nav-link {
-    color: $white;
-
-    &:hover {
-      background-color: $primary;
-
-      &:after {
-        display: inline-block;
-      }
-    }
-
-    &::after {
-      display: none;
-      height: 0;
-      width: 0;
-      border-top: 9px solid transparent;
-      border-right: 15px solid red;
-      border-bottom: 6px solid transparent;
-      position: absolute;
-      right: 0;
-    }
-  }
-}
-
-.topbar {
-  background-color: $white;
-  color: $white;
-  z-index: 2000;
-  height: 50px;
-}
-
-.home {
-  h1 {
-    color: $primary;
-  }
-
-  p {
-    color: $secondary;
-  }
-}
-
-.auth {
-  .presentation {
-    background-color: $primary;
   }
 }

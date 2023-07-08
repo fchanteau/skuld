@@ -6,8 +6,8 @@ import { router } from './pages/router';
 import { store } from './bootstrap';
 
 const MainContainer = (): JSX.Element => {
-  return <RouterProvider router={router} />
-}
+  return <RouterProvider router={router} />;
+};
 
 const App = (): JSX.Element => {
   return (
@@ -16,7 +16,7 @@ const App = (): JSX.Element => {
         <MainContainer />
       </StrictMode>
     </Provider>
-  )
-}
+  );
+};
 
 export default App;
