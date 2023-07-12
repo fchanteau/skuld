@@ -1,4 +1,5 @@
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, FormFeedback, FormGroup, Input, Label, Spinner } from 'reactstrap';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -51,7 +52,9 @@ export function Login() {
 
   return (
     <>
-      <h2>Login</h2>
+      <h2>
+        <FormattedMessage id="auth.login" />
+      </h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup floating>
           <Controller
@@ -74,7 +77,7 @@ export function Login() {
           {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
         </FormGroup>
         <Button color="primary" className="mb-3" block>
-          {isLoading ? <Spinner color="light" /> : 'Submit'}
+          {isLoading ? <Spinner color="light" /> : <FormattedMessage id="auth.login" />}
         </Button>
         {error && <ErrorMessage error={error} />}
       </Form>

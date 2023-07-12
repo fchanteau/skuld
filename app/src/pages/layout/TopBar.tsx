@@ -1,3 +1,4 @@
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import {
   Collapse,
@@ -24,7 +25,9 @@ export function TopBar() {
     <div>
       <Navbar color="primary" expand="xl" dark container="fluid">
         {/* navbar navbar-expand-xl navbar-light navbar-dark bg-primary */}
-        <NavbarBrand>TableTennisHub</NavbarBrand>
+        <NavbarBrand>
+          <FormattedMessage id="common.title" />
+        </NavbarBrand>
         <NavbarToggler />
         <Collapse isOpen={true} navbar>
           <Nav className="me-auto" navbar>
