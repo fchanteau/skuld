@@ -9,7 +9,6 @@ on:
       - master
     paths:
       - MyFirstFolder
-  workflow_dispatch:
 
 jobs:
   build:
