@@ -1,14 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { getAppConfig } from '@/config';
 import { getToken } from '@/features/auth/auth.service';
-
-const appConfig = getAppConfig();
 
 export const api = createApi({
   reducerPath: 'skuldApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${appConfig.apiUrl}`,
+    baseUrl: import.meta.env.VITE_APP_API_URL,
     prepareHeaders: (headers) => {
       // JWT
       const token = getToken();

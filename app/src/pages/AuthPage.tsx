@@ -19,7 +19,7 @@ export function AuthPage() {
           </div>
         </div>
         <div
-          className="col presentation text-white position-relative"
+          className="col presentation text-white position-relative d-none d-xl-block"
           style={{ background: `url(${bkg}) no-repeat center center`, backgroundSize: 'cover' }}
         >
           <div className="overlay position-absolute top-0 start-0 w-100 h-100"></div>

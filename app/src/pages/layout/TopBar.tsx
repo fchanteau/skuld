@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import {
@@ -21,6 +22,10 @@ export function TopBar() {
   const { data: user } = useCurrentUserQuery();
   const items = itemsMenuBuilder();
 
+  const [collapsed, setCollapsed] = useState(true);
+
+  const toggleNavbar = () => setCollapsed(!collapsed);
+
   return (
     <div>
       <Navbar color="primary" expand="xl" dark container="fluid">
@@ -28,15 +33,15 @@ export function TopBar() {
         <NavbarBrand>
           <FormattedMessage id="common.title" />
         </NavbarBrand>
-        <NavbarToggler />
-        <Collapse isOpen={true} navbar>
+        <NavbarToggler onClick={toggleNavbar} />
+        <Collapse isOpen={!collapsed} navbar>
           <Nav className="me-auto" navbar>
             {items.map((item) => (
               <ItemMenu item={item} key={item.label} />
             ))}
           </Nav>
           <NavbarText>
-            {user?.firstName} {user?.lastName}
+            <i className="pe-2 bi bi-person-circle"></i> {user?.firstName} {user?.lastName}
           </NavbarText>
         </Collapse>
       </Navbar>
@@ -62,8 +67,8 @@ function LinkItemMenu(props: LinkItemMenuProps) {
   return (
     <NavItem>
       <NavLink tag={Link} to={item.to} className="w-100">
-        <i className={`fs-5 pe-2 bi bi-${item.icon}`}></i>
-        <span className="fs-5">{item.label}</span>
+        <i className={`pe-2 bi bi-${item.icon}`}></i>
+        <span>{item.label}</span>
       </NavLink>
     </NavItem>
   );

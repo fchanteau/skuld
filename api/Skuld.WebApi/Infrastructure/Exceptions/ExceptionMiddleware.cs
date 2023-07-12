@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Ressources;
@@ -76,7 +77,7 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 			httpContext.Response.ContentType = "application/json";
 			httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-			var message = /*_hostingEnvironment.IsDevelopment () ?*/ $"{exception.Message} {exception.StackTrace}"/* : "Internal Server Error not handled by the system."*/;
+			var message = _hostingEnvironment.IsDevelopment () ? $"{exception.Message} {exception.StackTrace}" : "Internal Server Error not handled by the system.";
 
 			_logger.LogError (message);
 
