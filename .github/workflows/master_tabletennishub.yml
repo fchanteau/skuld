@@ -29,6 +29,9 @@ jobs:
         
       - name: dotnet test
         run: dotnet test --verbosity normal
+        
+      - name : ls
+        run : ls
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --project "./Skuld.WebApi/Skuld.WebApi.csproj"
