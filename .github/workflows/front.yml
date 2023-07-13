@@ -1,0 +1,37 @@
+name: Deploy to Azure Blob Storage
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - app/**
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install pnpm
+        run: |
+          npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Upload to Azure Blob Storage
+        uses: azure/CLI@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage blob upload-batch --account-name tabletennishub --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --destination $web --source ./dist
