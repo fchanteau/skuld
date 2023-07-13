@@ -30,7 +30,7 @@ jobs:
         run: pnpm build
 
       - name: Upload to Azure Blob Storage
-        uses: azure/CLI@v2
+        uses: Azure/cli@v1.0.7
         with:
           azcliversion: latest
           inlineScript: |
