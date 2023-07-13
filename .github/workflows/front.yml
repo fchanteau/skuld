@@ -34,4 +34,4 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            az storage blob upload-batch --account-name tabletennishub --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --destination $web --source ./dist
+            az storage blob upload-batch --account-name tabletennishub --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --destination \$web --source ./dist
