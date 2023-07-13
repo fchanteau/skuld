@@ -37,4 +37,4 @@ jobs:
         with:
           azcliversion: 2.50.0
           inlineScript: |
-            az storage blob upload-batch -d '$web' -s dist --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --debug --output json
+            az storage blob upload-batch -d \$web -s dist --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --debug --output json
