@@ -28,6 +28,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+        
+      - name: ls
+        run: ls
 
       - name: Upload to Azure Blob Storage
         uses: Azure/cli@v1.0.7
