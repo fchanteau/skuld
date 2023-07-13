@@ -21,7 +21,7 @@ export type UserLoginPayload = {
   password: string;
 };
 
-export type AddUserPayload = Omit<User, 'userId'> & { password: string };
+export type AddUserPayload = Omit<User, 'userId' | 'role'> & { password: string };
 
 export interface AuthState {
   isConnected: boolean;
