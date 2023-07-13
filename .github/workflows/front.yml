@@ -33,7 +33,8 @@ jobs:
         run: ls
 
       - name: Upload to Azure Blob Storage
-        uses: azure/CLI@v1
+        uses: Azure/CLI@v1
         with:
+          azcliversion: 2.50.0
           inlineScript: |
             az storage blob upload-batch --account-name tabletennishub --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --destination '$web' --source ./dist --debug
