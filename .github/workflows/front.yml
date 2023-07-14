@@ -28,6 +28,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+        
+      - name: Set up Azure CLI
+        uses: azure/setup-azure-cli@v1
 
       - name: Upload to Azure Blob Storage
         uses: Azure/CLI@v1
