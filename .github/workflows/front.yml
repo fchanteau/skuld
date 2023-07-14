@@ -35,6 +35,6 @@ jobs:
       - name: Upload to Azure Blob Storage
         uses: Azure/CLI@v1
         with:
-          azcliversion: 2.50.0
+          azcliversion: 2.9.1
           inlineScript: |
             az storage blob upload-batch -d \$web -s dist --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --debug --output json
