@@ -19,10 +19,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.x
+      - name: Node version
+        run: node-v
 
       - name: Install pnpm
         run: |
@@ -35,13 +33,13 @@ jobs:
         run: pnpm build
         
       - name: LS
-        run: ls dist
+        run: ls build
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: react-app
-          path: dist
+          path: build
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -65,7 +63,7 @@ jobs:
         with:
           azcliversion: 2.0.72
           inlineScript: |
-            az storage blob upload-batch --account-name tabletennishub -d '$web' -s ./dist
+            az storage blob upload-batch --account-name tabletennishub -d '$web' -s './build'
     
       - name: Azure logout
         run: |
