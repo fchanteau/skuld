@@ -63,7 +63,7 @@ jobs:
         with:
           azcliversion: 2.0.72
           inlineScript: |
-            az storage blob upload-batch --account-name tabletennishub -d '$web' -s './build'
+            az storage blob upload-batch --account-name tabletennishub -d '$web' -s .
     
       - name: Azure logout
         run: |
