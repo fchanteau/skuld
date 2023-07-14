@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: react-app
-          path: build
+          path: app/build
   deploy:
     runs-on: ubuntu-latest
     needs: build
