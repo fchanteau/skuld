@@ -28,13 +28,9 @@ jobs:
 
       - name: Build
         run: pnpm build
-        
-      - name: ls
-        run: ls dist
 
       - name: Upload to Azure Blob Storage
         uses: Azure/CLI@v1
         with:
-          azcliversion: 2.9.1
           inlineScript: |
-            az storage blob upload-batch -d \$web -s dist --account-key ${{ secrets.AZURE_STORAGE_ACCESS_KEY }} --debug --output json
+            az storage blob upload-batch --account-name tabletennishub --account-key {{ secrets.AZURE_STORAGE_ACCESS_KEY }} --destination '$web' --source ./dist --pattern "*" --output table
