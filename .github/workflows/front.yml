@@ -62,7 +62,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az storage blob upload-batch --account-name tabletennishub -d '$web' -s .
+            az storage blob upload-batch --account-name tabletennishub -d '$web' -s . --overwrite
     
       - name: Azure logout
         run: |
