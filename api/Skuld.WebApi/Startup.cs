@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Skuld.Data;
 using Skuld.WebApi.Infrastructure.Configuration;
+using Skuld.WebApi.Infrastructure.Configuration.Options;
 
 namespace Skuld.WebApi
 {
@@ -50,8 +51,12 @@ namespace Skuld.WebApi
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure (IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			var corsOptions = Configuration
+				.GetSection (CORSOptions.SectionName)
+				.Get<CORSOptions> ();
+
 			app.UseCors (cors =>
-				cors.WithOrigins ("http://localhost:3000", "http://127.0.0.1:5173")
+				cors.WithOrigins (corsOptions!.AllowedUrls)
 					.AllowAnyHeader ()
 					.AllowAnyMethod ()
 					.SetIsOriginAllowedToAllowWildcardSubdomains ()

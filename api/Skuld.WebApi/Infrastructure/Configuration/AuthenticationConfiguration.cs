@@ -12,8 +12,9 @@ namespace Skuld.WebApi.Infrastructure.Configuration
 	{
 		public static IServiceCollection AddCustomAuthentication (this IServiceCollection services, IConfiguration configuration)
 		{
-			var jwtOptions = new JwtOptions ();
-			configuration.Bind ("JWT", jwtOptions);
+			var jwtOptions = configuration
+				.GetSection (JwtOptions.SectionName)
+				.Get<JwtOptions> ();
 
 			services.AddAuthentication (JwtBearerDefaults.AuthenticationScheme)
 					.AddJwtBearer (options =>
