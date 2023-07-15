@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { isConnected } from '@/features/auth/auth.selector';
-import { ReactComponent as Logo } from '@/svgs/TableTennisHub.svg';
+import { ReactComponent as Logo } from '@/svgs/tth.svg';
 
 interface SkuldLogoProps {
   width?: string | number;
