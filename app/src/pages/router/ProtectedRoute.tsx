@@ -1,6 +1,7 @@
 import { type PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { PongLoading } from '@/common/components/PongLoading';
 import { type Role, useCurrentUserQuery } from '@/features/auth';
 
 export type ProtectedRouteProps = {
@@ -9,9 +10,10 @@ export type ProtectedRouteProps = {
 };
 
 export function ProtectedRoute(props: PropsWithChildren<ProtectedRouteProps>) {
-  const { data: user, isLoading } = useCurrentUserQuery();
+  const { data: user, isLoading, isUninitialized } = useCurrentUserQuery();
 
-  if (isLoading) return <h1>Chargement...</h1>;
+  // TODO : Show an overlay component for loading, componet should be positoin absolute
+  if (isLoading || isUninitialized) return <PongLoading />;
 
   if (!user || user?.role < props.minRole) {
     return <Navigate to={props.redirect ?? '/'} replace />;

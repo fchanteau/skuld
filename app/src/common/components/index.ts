@@ -1,2 +1,3 @@
-export * from "./Error";
-export * from "./SkuldLogo";
+export * from './Error';
+export * from './PongLoading';
+export * from './SkuldLogo';

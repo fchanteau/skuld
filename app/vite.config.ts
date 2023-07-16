@@ -16,7 +16,7 @@ const configPwa: Partial<VitePWAOptions> = {
     name: 'Table Tennis Hub',
     short_name: 'TTH',
     description: 'Organize your Table Tennis tournaments in one place',
-    theme_color: '#142654',
+    theme_color: '#ffffff',
     display: 'standalone',
     scope: '/',
     start_url: '/',
