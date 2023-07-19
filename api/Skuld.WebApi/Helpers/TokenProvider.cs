@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Skuld.Data.Entities;
 using Skuld.WebApi.Infrastructure.Configuration.Options;
 using Skuld.WebApi.Infrastructure.Constants;
@@ -9,17 +10,32 @@ using System.Text;
 
 namespace Skuld.WebApi.Helpers
 {
-	public static class TokenHelper
+	public interface ITokenProvider
 	{
-		public static string CreateToken (User user, JwtOptions options)
+		string CreateToken (User user);
+		RefreshToken BuildRefreshToken (User user, DateTime expiredDate);
+	}
+
+	public class TokenProvider : ITokenProvider
+	{
+		private readonly JwtOptions _jwtOptions;
+		private readonly IDateTimeProvider _dateTimeProvider;
+
+		public TokenProvider (IOptions<JwtOptions> jwtOptions, IDateTimeProvider dateTimeProvider)
+		{
+			_jwtOptions = jwtOptions.Value;
+			_dateTimeProvider = dateTimeProvider;
+		}
+
+		public string CreateToken (User user)
 		{
 			// TODO FCU : Maybe better handling here ?
-			var key = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (options.SecretKey ?? throw new Exception ("No Secret key found in settings")));
+			var key = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (_jwtOptions.SecretKey ?? throw new Exception ("No Secret key found in settings")));
 			var credentials = new SigningCredentials (key, SecurityAlgorithms.HmacSha256);
 
-			var token = new JwtSecurityToken (options.Issuer,
-											 options.Audience,
-											 expires: DateTime.Now.AddMinutes (30),
+			var token = new JwtSecurityToken (_jwtOptions.Issuer,
+											 _jwtOptions.Audience,
+											 expires: _dateTimeProvider.UtcNow.AddMinutes (15),
 											 signingCredentials: credentials);
 
 			token.Payload.AddClaim (new Claim (CustomClaimTypes.UserId, user.UserId.ToString ()));
@@ -30,7 +46,7 @@ namespace Skuld.WebApi.Helpers
 			return new JwtSecurityTokenHandler ().WriteToken (token);
 		}
 
-		public static RefreshToken BuildRefreshToken (User user, DateTime expiredDate)
+		public RefreshToken BuildRefreshToken (User user, DateTime expiredDate)
 		{
 			return new RefreshToken ()
 			{

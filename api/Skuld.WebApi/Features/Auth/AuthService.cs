@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
 using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Helpers;
-using Skuld.WebApi.Infrastructure.Configuration.Options;
 using System;
 using System.Linq;
 using System.Net;
@@ -25,13 +23,14 @@ namespace Skuld.WebApi.Features.Auth
 
 	public class AuthService : BaseService, IAuthService
 	{
-		private readonly JwtOptions _jwtOptions;
-		private readonly ILogger<AuthService> _logger;
 		private readonly IMapper _mapper;
+		private readonly IDateTimeProvider _dateTimeProvider;
+		private readonly ITokenProvider _tokenProvider;
+		private readonly ILogger<AuthService> _logger;
 
 		#region Constructor
 
-		public AuthService (IUnitOfWork unitOfWork, IOptions<JwtOptions> jwtOptions, ILogger<AuthService> logger) : base (unitOfWork)
+		public AuthService (IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, ITokenProvider tokenProvider, ILogger<AuthService> logger) : base (unitOfWork)
 		{
 			var config = new MapperConfiguration (cfg =>
 			{
@@ -41,7 +40,8 @@ namespace Skuld.WebApi.Features.Auth
 			config.AssertConfigurationIsValid ();
 
 			_mapper = new Mapper (config);
-			_jwtOptions = jwtOptions.Value;
+			_dateTimeProvider = dateTimeProvider;
+			_tokenProvider = tokenProvider;
 			_logger = logger;
 		}
 
@@ -72,7 +72,7 @@ namespace Skuld.WebApi.Features.Auth
 			UnitOfWork.PasswordRepository.Insert (password);
 
 			// create refresh token for this user
-			UnitOfWork.RefreshTokenRepository.Insert (TokenHelper.BuildRefreshToken (user, DateTime.Now.AddDays (7)));
+			UnitOfWork.RefreshTokenRepository.Insert (_tokenProvider.BuildRefreshToken (user, _dateTimeProvider.UtcNow.AddDays (7)));
 
 			// commit changes
 			await UnitOfWork.SaveChangesAsync ();
@@ -99,7 +99,7 @@ namespace Skuld.WebApi.Features.Auth
 				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
 			}
 
-			var token = TokenHelper.CreateToken (user, _jwtOptions);
+			var token = _tokenProvider.CreateToken (user);
 
 			var refreshToken = await UnitOfWork.RefreshTokenRepository.TryGetFirstAsync (
 				filter: x => x.UserId == user.UserId,
@@ -110,9 +110,9 @@ namespace Skuld.WebApi.Features.Auth
 				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
 			}
 
-			if (refreshToken.ExpiredAt < DateTime.Now)
+			if (refreshToken.ExpiredAt < _dateTimeProvider.UtcNow)
 			{
-				refreshToken = TokenHelper.BuildRefreshToken (user, DateTime.Now.AddDays (7));
+				refreshToken = _tokenProvider.BuildRefreshToken (user, _dateTimeProvider.UtcNow.AddDays (7));
 				UnitOfWork.RefreshTokenRepository.Insert (refreshToken);
 				await UnitOfWork.SaveChangesAsync ();
 			}
@@ -135,9 +135,8 @@ namespace Skuld.WebApi.Features.Auth
 
 		public async Task<string> ValidRefreshToken (long userId, RefreshTokenPayload payload)
 		{
-			var response = await UnitOfWork.RefreshTokenRepository.TryGetOneAsync (filter: x => x.Value == payload.RefreshToken && x.UserId == userId);
-			if (response is null ||
-				response.ExpiredAt < DateTime.Now)
+			var response = await UnitOfWork.RefreshTokenRepository.TryGetOneAsync (filter: x => x.Value == payload.RefreshToken && x.UserId == userId && x.ExpiredAt > _dateTimeProvider.UtcNow);
+			if (response is null)
 			{
 				throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.RefreshTokenInvalid);
 			}
@@ -145,7 +144,7 @@ namespace Skuld.WebApi.Features.Auth
 			var user = await UnitOfWork.UserRepository.TryGetByIdAsync (userId);
 
 			// TODO FCU : better handling here
-			return TokenHelper.CreateToken (user!, _jwtOptions);
+			return _tokenProvider.CreateToken (user!);
 		}
 
 		#endregion

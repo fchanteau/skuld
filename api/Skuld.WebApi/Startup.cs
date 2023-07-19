@@ -40,6 +40,8 @@ namespace Skuld.WebApi
 
 			services.AddCustomAuthorization ();
 
+			services.AddCustomProviders ();
+
 			services.Configure<ApiBehaviorOptions> (options =>
 			{
 				options.SuppressModelStateInvalidFilter = true;

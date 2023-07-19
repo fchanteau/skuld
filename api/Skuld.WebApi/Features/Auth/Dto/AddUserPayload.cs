@@ -6,7 +6,7 @@ namespace Skuld.WebApi.Features.Auth.Dto
 	{
 		[Required]
 		[MaxLength (255)]
-		[RegularExpression (@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")]
+		[EmailAddress]
 		public string? Email { get; set; }
 
 		[Required]
