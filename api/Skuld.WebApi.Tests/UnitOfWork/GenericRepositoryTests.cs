@@ -14,7 +14,7 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 		private readonly SkuldContext _context;
 
 		private readonly IGenericRepository<User> _userRepository;
-		private static IEnumerable<User> _users;
+		private readonly IEnumerable<User> _users;
 
 		public GenericRepositoryTests ()
 		{
@@ -119,7 +119,7 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 		//	_context.Users.DidNotReceive ().AsNoTracking ();
 		//}
 
-		private DbSet<User> FakeDbSet (IEnumerable<User> data)
+		private static DbSet<User> FakeDbSet (IEnumerable<User> data)
 		{
 
 			var _data = data.AsQueryable ();
@@ -200,7 +200,7 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 			return _inner.Execute<TResult> (expression);
 		}
 
-		public IAsyncEnumerable<TResult> ExecuteAsync<TResult> (Expression expression)
+		public static IAsyncEnumerable<TResult> ExecuteAsync<TResult> (Expression expression)
 		{
 			return new TestAsyncEnumerable<TResult> (expression);
 		}
@@ -259,7 +259,7 @@ namespace Skuld.WebApi.Tests.UnitOfWork
 			}
 		}
 
-		public Task<bool> MoveNextAsync (CancellationToken cancellationToken)
+		public Task<bool> MoveNextAsync (CancellationToken _)
 		{
 			return Task.FromResult (_inner.MoveNext ());
 		}

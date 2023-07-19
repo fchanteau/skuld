@@ -1,13 +1,12 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
 using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Features.Auth;
 using Skuld.WebApi.Features.Auth.Dto;
-using Skuld.WebApi.Infrastructure.Configuration.Options;
+using Skuld.WebApi.Helpers;
 using System.Linq.Expressions;
 using System.Net;
 
@@ -17,6 +16,8 @@ namespace Skuld.WebApi.Tests.Features.Auth
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IGenericRepository<User> _userRepository;
+		private readonly IDateTimeProvider _dateTimeProvider;
+		private readonly ITokenProvider _tokenProvider;
 
 		private readonly AuthService _authService;
 
@@ -24,12 +25,12 @@ namespace Skuld.WebApi.Tests.Features.Auth
 		{
 			_unitOfWork = Substitute.For<IUnitOfWork> ();
 			_userRepository = Substitute.For<IGenericRepository<User>> ();
+			_dateTimeProvider = Substitute.For<IDateTimeProvider> ();
+			_tokenProvider = Substitute.For<ITokenProvider> ();
 
 			_unitOfWork.UserRepository.Returns (_userRepository);
 
-			var jwtOptions = Options.Create (new JwtOptions ());
-
-			_authService = new AuthService (_unitOfWork, jwtOptions, NullLogger<AuthService>.Instance);
+			_authService = new AuthService (_unitOfWork, _dateTimeProvider, _tokenProvider, NullLogger<AuthService>.Instance);
 		}
 
 		[Fact]
