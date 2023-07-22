@@ -23,7 +23,7 @@ namespace Skuld.Data
 		{
 			if (!optionsBuilder.IsConfigured)
 			{
-				optionsBuilder.UseSqlServer ("Server=tcp:tabletennishub.database.windows.net,1433;Initial Catalog=tabletennishub;Persist Security Info=False;User ID=CloudSA4d68c111;Password=TTyGB5S7fepJ5vZ;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+				optionsBuilder.UseSqlServer ("");
 			}
 		}
 
