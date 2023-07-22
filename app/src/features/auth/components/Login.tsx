@@ -9,40 +9,24 @@ import { ErrorMessage } from '@/common/components';
 import { useAppDispatch } from '@/hooks';
 
 import { useLoginMutation } from '../auth.api';
-import { type UserLoginPayload } from '../auth.model';
+import { type UserLoginPayload, useUserLoginSchema } from '../auth.model';
 import { saveTokenInfos } from '../auth.service';
-
-import * as z from 'zod';
-
-interface LoginInput {
-  email: string;
-  password: string;
-}
-
-const schema = z.object({
-  email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Not an email' }),
-  password: z.string().min(1, { message: 'Password is required' }),
-});
 
 export function Login() {
   const dispatch = useAppDispatch();
   const [login, { isLoading, error }] = useLoginMutation();
   const navigate = useNavigate();
+  const userLoginSchema = useUserLoginSchema();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(schema),
+  } = useForm<UserLoginPayload>({
+    resolver: zodResolver(userLoginSchema),
   });
 
-  const onSubmit: SubmitHandler<LoginInput> = async (data) => {
-    const payload: UserLoginPayload = {
-      email: data.email,
-      password: data.password,
-    };
-
-    const tokenInfos = await login(payload).unwrap();
+  const onSubmit: SubmitHandler<UserLoginPayload> = async (data) => {
+    const tokenInfos = await login(data).unwrap();
 
     saveTokenInfos(tokenInfos);
 
@@ -62,7 +46,9 @@ export function Login() {
             control={control}
             render={({ field }) => <Input invalid={errors.email !== undefined} id="email" type="email" {...field} />}
           />
-          <Label for="email">Email*</Label>
+          <Label for="email">
+            <FormattedMessage id="auth.email" />*
+          </Label>
           {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
         </FormGroup>
         <FormGroup floating>
@@ -73,7 +59,9 @@ export function Login() {
               <Input invalid={errors.password !== undefined} id="password" type="password" {...field} />
             )}
           />
-          <Label for="password">Password*</Label>
+          <Label for="password">
+            <FormattedMessage id="auth.password" />*
+          </Label>
           {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
         </FormGroup>
         <Button color="primary" className="mb-3" block>

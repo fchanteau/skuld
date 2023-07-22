@@ -16,11 +16,12 @@ import {
   UncontrolledDropdown,
 } from 'reactstrap';
 
+import { useFormatMessage } from '@/common/hooks';
 import { useCurrentUserQuery } from '@/features/auth/auth.api';
 
 export function TopBar() {
   const { data: user } = useCurrentUserQuery();
-  const items = itemsMenuBuilder();
+  const items = useItemsMenuBuilder();
 
   const [collapsed, setCollapsed] = useState(true);
 
@@ -104,11 +105,13 @@ interface IItemMenu {
   icon?: string;
 }
 
-function itemsMenuBuilder(): IItemMenu[] {
+const useItemsMenuBuilder = (): IItemMenu[] => {
+  const formatMessage = useFormatMessage();
+
   return [
     {
       to: '/',
-      label: 'Dashboard',
+      label: formatMessage('topbar.dashboard'),
       icon: 'speedometer',
     },
     {
@@ -122,4 +125,4 @@ function itemsMenuBuilder(): IItemMenu[] {
       icon: 'house-door-fill',
     },
   ];
-}
+};

@@ -1,5 +1,17 @@
 {
   "common.title": "TableTennisHub",
+  "common.form.required": "Ce champ est requis",
   "auth.login": "Se connecter",
-  "auth.register": "S'inscrire"
+  "auth.email": "Email",
+  "auth.email.error": "La valeur ne correspond pas à un email",
+  "auth.password": "Mot de passe",
+  "auth.repeatPassword": "Confirmer le mot de passe",
+  "auth.repeatPassword.error": "Les mots de passes ne correspondent pas",
+  "auth.firstname": "Prénom",
+  "auth.lastname": "Nom",
+  "auth.register": "S'inscrire",
+  "auth.register.phrase": "S'inscrire gratuitement",
+  "auth.login.phrase": "Déjà un compte ? Connectez-vous !",
+  "auth.presentation": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur libero vero odit autem nam, mollitia ducimus facilis fugit molestiae consequatur expedita quisquam veritatis dolor facere ab! Incidunt tenetur nemo eligendi?",
+  "topbar.dashboard": "Tableau de bord"
 }

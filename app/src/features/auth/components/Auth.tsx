@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Alert, Button } from 'reactstrap';
 
 import { SkuldLogo } from '@/common/components';
+import { useFormatMessage } from '@/common/hooks';
 import { type AuthType } from '@/pages/AuthPage';
 
 import { isConnected } from '../auth.selector';
@@ -18,6 +19,7 @@ type AuthProps = {
 
 export function Auth(props: AuthProps) {
   const userIsConnected = useSelector(isConnected);
+  const formatMessage = useFormatMessage();
 
   const isSignIn: boolean = useMemo(() => props.type === 'SignIn', [props.type]);
 
@@ -44,7 +46,7 @@ export function Auth(props: AuthProps) {
       {form}
       <hr />
       <Button block color="primary" outline onClick={switchForm}>
-        {isSignIn ? 'Register now !' : 'Already have an account ? Sign in !'}
+        {isSignIn ? formatMessage('auth.register.phrase') : formatMessage('auth.login.phrase')}
       </Button>
     </>
   );

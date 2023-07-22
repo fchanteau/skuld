@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import bkg from '@/assets/bg-auth.jpg';
 import { Auth } from '@/features/auth';
@@ -25,7 +26,9 @@ export function AuthPage() {
           <div className="overlay position-absolute top-0 start-0 w-100 h-100"></div>
           <div className="row g-0 align-items-center w-100 h-100">
             <div className="col text-center presentation-container">
-              <h2>Welcome</h2>
+              <h2>
+                <FormattedMessage id="common.title" />
+              </h2>
               <hr className="w-25 mx-auto" />
               <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur libero vero odit autem nam, mollitia
