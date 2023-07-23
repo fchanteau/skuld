@@ -9,6 +9,7 @@ namespace Skuld.WebApi.Infrastructure.Configuration
 		{
 			services.AddSingleton<IDateTimeProvider, DateTimeProvider> ();
 			services.AddSingleton<ITokenProvider, TokenProvider> ();
+			services.AddSingleton<IPasswordProvider, PasswordProvider> ();
 
 			return services;
 		}

@@ -5,10 +5,8 @@ using Skuld.Data.UnitOfWork;
 using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Helpers;
-using System;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Skuld.WebApi.Features.Auth
@@ -26,11 +24,12 @@ namespace Skuld.WebApi.Features.Auth
 		private readonly IMapper _mapper;
 		private readonly IDateTimeProvider _dateTimeProvider;
 		private readonly ITokenProvider _tokenProvider;
+		private readonly IPasswordProvider _passwordProvider;
 		private readonly ILogger<AuthService> _logger;
 
 		#region Constructor
 
-		public AuthService (IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, ITokenProvider tokenProvider, ILogger<AuthService> logger) : base (unitOfWork)
+		public AuthService (IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, ITokenProvider tokenProvider, IPasswordProvider passwordProvider, ILogger<AuthService> logger) : base (unitOfWork)
 		{
 			var config = new MapperConfiguration (cfg =>
 			{
@@ -42,6 +41,7 @@ namespace Skuld.WebApi.Features.Auth
 			_mapper = new Mapper (config);
 			_dateTimeProvider = dateTimeProvider;
 			_tokenProvider = tokenProvider;
+			_passwordProvider = passwordProvider;
 			_logger = logger;
 		}
 
@@ -66,7 +66,7 @@ namespace Skuld.WebApi.Features.Auth
 			// create password
 			var password = new Password
 			{
-				Value = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password ?? throw new Exception ())), // TODO FCU : better handling here with generic exception
+				Value = _passwordProvider.GenerateCipherPassword (payload.Password),
 				UserId = user.UserId,
 			};
 			UnitOfWork.PasswordRepository.Insert (password);
@@ -81,8 +81,8 @@ namespace Skuld.WebApi.Features.Auth
 
 			if (userCreated is null)
 			{
-				// TODO FCU : better handling here, return custom error ?
-				throw new Exception ();
+				// Should never happen
+				throw new SkuldException (HttpStatusCode.InternalServerError, SkuldExceptionType.UserNotFound);
 			}
 
 			return _mapper.Map<User, UserResponse> (userCreated);
@@ -90,7 +90,7 @@ namespace Skuld.WebApi.Features.Auth
 
 		public async Task<TokenInfoResponse> LoginAsync (LoginPayload payload)
 		{
-			var cryptedPassword = Convert.ToBase64String (Encoding.ASCII.GetBytes (payload.Password ?? ""));
+			var cryptedPassword = _passwordProvider.GenerateCipherPassword (payload.Password);
 
 			var user = await UnitOfWork.UserRepository.TryGetOneAsync (filter: x => x.Email.Equals (payload.Email), navigationProperties: x => x.Passwords);
 			var validPassword = user?.Passwords.Any (x => x.IsActive && x.Value == cryptedPassword) ?? false;
@@ -143,8 +143,14 @@ namespace Skuld.WebApi.Features.Auth
 
 			var user = await UnitOfWork.UserRepository.TryGetByIdAsync (userId);
 
+			if (user is null)
+			{
+				// Should never happen
+				throw new SkuldException (HttpStatusCode.InternalServerError, SkuldExceptionType.UserNotFound);
+			}
+
 			// TODO FCU : better handling here
-			return _tokenProvider.CreateToken (user!);
+			return _tokenProvider.CreateToken (user);
 		}
 
 		#endregion
