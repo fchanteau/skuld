@@ -52,7 +52,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
     const expiredDate = new Date(tokenDecoded.exp * 1000);
     const expiredSoon = add(new Date(), { minutes: 1 }) > expiredDate;
     if (expiredSoon) {
-      const refreshToken = getRefreshToken() + 'a';
+      const refreshToken = getRefreshToken();
       const refreshRequest: FetchArgs = {
         method: 'POST',
         url: '/auth/refreshtoken',

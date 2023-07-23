@@ -13,5 +13,10 @@
   "auth.register.phrase": "S'inscrire gratuitement",
   "auth.login.phrase": "Déjà un compte ? Connectez-vous !",
   "auth.presentation": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur libero vero odit autem nam, mollitia ducimus facilis fugit molestiae consequatur expedita quisquam veritatis dolor facere ab! Incidunt tenetur nemo eligendi?",
-  "topbar.dashboard": "Tableau de bord"
+  "topbar.dashboard": "Tableau de bord",
+  "user.lastname": "Nom : {value}",
+  "user.firstname": "Prénom : {value}",
+  "user.email": "Email : {value}",
+  "user.widget.title": "Mes informations",
+  "user.widget.edit": "Modifier mes informations"
 }
