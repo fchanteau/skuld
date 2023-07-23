@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Skuld.WebApi.Features.Auth.Dto;
+using Skuld.WebApi.Features.Users.Dto;
 using Skuld.WebApi.Infrastructure.Authorization;
 using Skuld.WebApi.Infrastructure.Constants;
 

@@ -25,16 +25,16 @@ namespace Skuld.WebApi.Features.Auth
 
 		[AllowAnonymous]
 		[HttpPost]
-		[ProducesResponseType (StatusCodes.Status201Created, Type = typeof (UserResponse))]
+		[ProducesResponseType (StatusCodes.Status201Created)]
 		[ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
-		[SwaggerResponse (StatusCodes.Status201Created, Type = typeof (UserResponse))]
+		[SwaggerResponse (StatusCodes.Status201Created)]
 		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
 		[ValidateInputModel]
 		public async Task<IActionResult> CreateUser ([FromBody] AddUserPayload payload)
 		{
-			var user = await _authService.AddUserAsync (payload);
+			await _authService.AddUserAsync (payload);
 
-			return CreatedAtAction (nameof (GetUser), user);
+			return StatusCode (201);
 		}
 
 		[AllowAnonymous]
@@ -68,18 +68,6 @@ namespace Skuld.WebApi.Features.Auth
 				Token = newToken,
 				RefreshToken = payload.RefreshToken
 			});
-		}
-
-		[HttpGet ("me")]
-		[ProducesResponseType (StatusCodes.Status200OK, Type = typeof (UserResponse))]
-		[ProducesResponseType (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
-		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (UserResponse))]
-		[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
-		public async Task<IActionResult> GetUser ()
-		{
-			var user = await _authService.GetUserAsync (GetUserIdFromToken ());
-
-			return Ok (user);
 		}
 	}
 }

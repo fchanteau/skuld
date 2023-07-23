@@ -1,4 +1,4 @@
-﻿namespace Skuld.WebApi.Features.Auth.Dto
+﻿namespace Skuld.WebApi.Features.Users.Dto
 {
 	public enum Role
 	{

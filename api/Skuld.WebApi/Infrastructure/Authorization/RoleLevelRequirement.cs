@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Skuld.WebApi.Features.Auth.Dto;
+using Skuld.WebApi.Features.Users.Dto;
 
 namespace Skuld.WebApi.Infrastructure.Authorization
 {
