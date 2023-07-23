@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import { Role } from '@/features/auth';
+import { Role } from '@/features/user';
 
 import { AuthPage } from '../AuthPage';
 import { DashboardPage } from '../DashboardPage';

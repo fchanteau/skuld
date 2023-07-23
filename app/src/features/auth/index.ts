@@ -5,4 +5,3 @@ export * from './auth.service';
 export * from './auth.slice';
 export * from './components/Auth';
 export * from './components/Login';
-export * from './components/UserInfos';

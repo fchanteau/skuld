@@ -2,7 +2,7 @@ import { type PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { PongLoading } from '@/common/components/PongLoading';
-import { type Role, useCurrentUserQuery } from '@/features/auth';
+import { type Role, useCurrentUserQuery } from '@/features/user';
 
 export type ProtectedRouteProps = {
   minRole: Role;

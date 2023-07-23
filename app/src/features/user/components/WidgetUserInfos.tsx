@@ -1,6 +1,6 @@
-import { useCurrentUserQuery } from '../auth.api';
+import { useCurrentUserQuery } from '../user.api';
 
-export function UserInfos() {
+export function WidgetUserInfos() {
   const { data } = useCurrentUserQuery();
 
   return (

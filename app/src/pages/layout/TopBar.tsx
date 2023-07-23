@@ -17,7 +17,7 @@ import {
 } from 'reactstrap';
 
 import { useFormatMessage } from '@/common/hooks';
-import { useCurrentUserQuery } from '@/features/auth/auth.api';
+import { useCurrentUserQuery } from '@/features/user';
 
 export function TopBar() {
   const { data: user } = useCurrentUserQuery();
