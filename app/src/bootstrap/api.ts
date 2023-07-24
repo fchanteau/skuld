@@ -70,6 +70,8 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
         saveTokenInfos(refreshResult.data as TokenInfos);
       }
     }
+  } else {
+    console.log('FCU pas de token');
   }
   return await baseQuery(args, api, extraOptions);
 };
