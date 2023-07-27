@@ -11,32 +11,37 @@ const configPwa: Partial<VitePWAOptions> = {
   devOptions: {
     enabled: true,
   },
-  includeAssets: ['.src/svgs/tth.svg'],
+  includeAssets: ['src/svgs/tth.svg'],
   manifest: {
     name: 'Table Tennis Hub',
     short_name: 'TTH',
     description: 'Organize your Table Tennis tournaments in one place',
-    theme_color: '#ffffff',
-    display: 'standalone',
+    theme_color: '#142654',
     scope: '/',
     start_url: '/',
     orientation: 'portrait',
     icons: [
       {
-        src: 'tth.png', // <== don't add slash, for testing
+        src: 'pwa-192x192.png',
         sizes: '192x192',
         type: 'image/png',
       },
       {
-        src: '/tth.png', // <== don't remove slash, for testing
+        src: 'pwa-512x512.png',
         sizes: '512x512',
         type: 'image/png',
       },
       {
-        src: 'tth.png', // <== don't add slash, for testing
+        src: 'pwa-512x512.png',
         sizes: '512x512',
         type: 'image/png',
-        purpose: 'any maskable',
+        purpose: 'any',
+      },
+      {
+        src: 'maskable-icon-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
   },
