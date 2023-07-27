@@ -14,7 +14,7 @@ export function AuthPage() {
       <div className="row g-0 align-items-stretch min-vh-100">
         <div className="col">
           <div className="row g-0 align-items-start h-100">
-            <div className="col mx-5">
+            <div className="col mx-5 mb-5">
               <Auth type={authType} onChangeType={setAuthType} />
             </div>
           </div>
