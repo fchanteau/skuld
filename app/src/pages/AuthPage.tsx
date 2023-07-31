@@ -29,7 +29,7 @@ export function AuthPage() {
               <h2>
                 <FormattedMessage id="common.title" />
               </h2>
-              <hr className="w-25 mx-auto" />
+              <hr className="w-50 mx-auto" />
               <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur libero vero odit autem nam, mollitia
                 ducimus facilis fugit molestiae consequatur expedita quisquam veritatis dolor facere ab! Incidunt

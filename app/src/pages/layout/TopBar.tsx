@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Collapse,
   DropdownItem,
@@ -16,11 +16,13 @@ import {
   UncontrolledDropdown,
 } from 'reactstrap';
 
+import { actionCreators } from '@/bootstrap';
 import { useFormatMessage } from '@/common/hooks';
+import { clearStorage } from '@/features/auth';
 import { useCurrentUserQuery } from '@/features/user';
+import { useAppDispatch } from '@/hooks';
 
 export function TopBar() {
-  const { data: user } = useCurrentUserQuery();
   const items = useItemsMenuBuilder();
 
   const [collapsed, setCollapsed] = useState(true);
@@ -42,7 +44,7 @@ export function TopBar() {
             ))}
           </Nav>
           <NavbarText>
-            <i className="pe-2 bi bi-person-circle"></i> {user?.firstName} {user?.lastName}
+            <UserMenu />
           </NavbarText>
         </Collapse>
       </Navbar>
@@ -93,6 +95,31 @@ function DropdownItemMenu(props: DropdownItemMenuProps) {
             <ItemMenu item={child} />
           </DropdownItem>
         ))}
+      </DropdownMenu>
+    </UncontrolledDropdown>
+  );
+}
+
+function UserMenu() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { data: user } = useCurrentUserQuery();
+
+  const onLogout = () => {
+    clearStorage();
+    dispatch(actionCreators.auth.setConnectedUser(false));
+    navigate('/auth');
+  };
+
+  return (
+    <UncontrolledDropdown>
+      <DropdownToggle nav>
+        <i className="pe-2 bi bi-person-circle"></i> {user?.lastName} {user?.firstName}
+      </DropdownToggle>
+      <DropdownMenu>
+        <DropdownItem onClick={onLogout}>
+          <FormattedMessage id="auth.logout" />
+        </DropdownItem>
       </DropdownMenu>
     </UncontrolledDropdown>
   );
