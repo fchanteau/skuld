@@ -1,5 +1,5 @@
 # Skuld Api
 
 ## Requirements
-- dotnet 7
+- dotnet 8
 - Visual Studio 2022
