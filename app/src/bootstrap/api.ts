@@ -11,7 +11,7 @@ import { type TokenInfos } from '@/features/auth';
 import { clearStorage, getRefreshToken, getToken, saveTokenInfos } from '@/features/auth/auth.service';
 
 import { add } from 'date-fns';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 type JwtData = {
   'user.id': string;
@@ -47,7 +47,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   const token = getToken();
 
   if (token) {
-    const tokenDecoded = jwt_decode<JwtData>(token);
+    const tokenDecoded = jwtDecode<JwtData>(token);
 
     const expiredDate = new Date(tokenDecoded.exp * 1000);
     const expiredSoon = add(new Date(), { minutes: 1 }) > expiredDate;
