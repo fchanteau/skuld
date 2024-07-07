@@ -1,19 +1,19 @@
-﻿namespace Skuld.WebApi.Exceptions
+﻿namespace Skuld.WebApi.Exceptions;
+
+public enum SkuldExceptionType
 {
-	public enum SkuldExceptionType
-	{
-		// General
-		BadFormatId = 1,
-		ValidationFailed = 2,
-		JsonPatchException = 3,
+	// General
+	None = 0,
+	BadFormatId = 1,
+	ValidationFailed = 2,
+	JsonPatchException = 3,
 
-		// User
-		UserAlreadyExist = 100,
-		UserLoginFailed = 101,
-		UserNotFound = 102,
-		UserUpdateFailed = 103,
+	// User
+	UserAlreadyExist = 100,
+	UserLoginFailed = 101,
+	UserNotFound = 102,
+	UserUpdateFailed = 103,
 
-		// RefreshToken
-		RefreshTokenInvalid = 200,
-	}
+	// RefreshToken
+	RefreshTokenInvalid = 200,
 }
