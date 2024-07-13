@@ -2,6 +2,7 @@
 using Skuld.WebApi.Exceptions;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Skuld.WebApi.Infrastructure.ErrorHandling;
 
@@ -28,7 +29,7 @@ public class SkuldResult<T>
 		Data = data;
 	}
 
-	public static SkuldResult<T> Success (HttpStatusCode httpStatusCode, T data)
+	public static SkuldResult<T> Success (T data, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
 	{
 		return new SkuldResult<T> (httpStatusCode, data);
 	}
@@ -42,11 +43,31 @@ public class SkuldResult<T>
 		Func<HttpStatusCode, T, IActionResult> onSuccess,
 		Func<HttpStatusCode, SkuldExceptionType, object[], IActionResult> onError)
 	{
-		return IsSuccess ? onSuccess (HttpStatusCode, Data) : onError (HttpStatusCode, SkuldExceptionType, Parameters);
+		return IsSuccess ? onSuccess (HttpStatusCode, Data!) : onError (HttpStatusCode, SkuldExceptionType, Parameters);
 	}
 
 	public static SkuldResult<T> MapFromError<TSource> (SkuldResult<TSource> source)
 	{
 		return Error (source.HttpStatusCode, source.SkuldExceptionType, source.Parameters);
+	}
+
+	public SkuldResult<TD> ContinueWith<TD> (Func<T, SkuldResult<TD>> lambda)
+	{
+		if (IsError)
+		{
+			return new SkuldResult<TD> (HttpStatusCode, SkuldExceptionType, Parameters);
+		}
+
+		return lambda (Data!);
+	}
+
+	public SkuldResult<TD> ContinueWithAsync<TD> (Func<T, Task<SkuldResult<TD>>> lambda)
+	{
+		if (IsError)
+		{
+			return new SkuldResult<TD> (HttpStatusCode, SkuldExceptionType, Parameters);
+		}
+
+		return lambda (Data!).Result;
 	}
 }

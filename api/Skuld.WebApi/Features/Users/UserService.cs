@@ -3,6 +3,7 @@ using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
 using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Features.Users.Dto;
+using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -11,6 +12,8 @@ namespace Skuld.WebApi.Features.Users;
 public interface IUserService
 {
 	Task<UserResponse> GetUserAsync (long userId);
+
+	Task<SkuldResult<UserResponse>> GetUserResultAsync (long userId);
 }
 
 public class UserService : BaseService, IUserService
@@ -33,5 +36,19 @@ public class UserService : BaseService, IUserService
 			throw new SkuldException (HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound);
 
 		return _mapper.Map<User, UserResponse> (user);
+	}
+
+	public async Task<SkuldResult<UserResponse>> GetUserResultAsync (long userId)
+	{
+		var dbUser = await UnitOfWork.UserRepository.TryGetOneAsync (user => user.UserId == userId);
+
+		if (dbUser is null)
+		{
+			return SkuldResult<UserResponse>.Error (HttpStatusCode.NotFound, SkuldExceptionType.UserNotFound, userId);
+		}
+
+		var user = _mapper.Map<User, UserResponse> (dbUser);
+
+		return SkuldResult<UserResponse>.Success (user);
 	}
 }
