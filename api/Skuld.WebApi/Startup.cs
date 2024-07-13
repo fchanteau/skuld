@@ -69,8 +69,6 @@ public class Startup
 			app.UseDeveloperExceptionPage ();
 		}
 
-		app.UseCustomExceptionMiddleware ();
-
 		app.UseHttpsRedirection ();
 
 		app.UseRouting ();

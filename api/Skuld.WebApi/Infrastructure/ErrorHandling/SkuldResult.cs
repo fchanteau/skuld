@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Skuld.WebApi.Exceptions;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -9,17 +8,17 @@ namespace Skuld.WebApi.Infrastructure.ErrorHandling;
 public class SkuldResult<T>
 {
 	private HttpStatusCode HttpStatusCode { get; }
-	private SkuldExceptionType SkuldExceptionType { get; } = SkuldExceptionType.None;
-	private object[] Parameters { get; } = Array.Empty<object> ();
+	private SkuldErrorType SkuldErrorType { get; } = SkuldErrorType.None;
+	private object?[] Parameters { get; } = Array.Empty<object> ();
 	private T? Data { get; }
 
-	private bool IsSuccess => Data is not null && SkuldExceptionType == SkuldExceptionType.None;
+	private bool IsSuccess => Data is not null && SkuldErrorType == SkuldErrorType.None;
 	private bool IsError => !IsSuccess;
 
-	private SkuldResult (HttpStatusCode httpStatusCode, SkuldExceptionType skuldExceptionType, object[] parameters)
+	private SkuldResult (HttpStatusCode httpStatusCode, SkuldErrorType skuldErrorType, object?[] parameters)
 	{
 		HttpStatusCode = httpStatusCode;
-		SkuldExceptionType = skuldExceptionType;
+		SkuldErrorType = skuldErrorType;
 		Parameters = parameters;
 	}
 
@@ -34,28 +33,28 @@ public class SkuldResult<T>
 		return new SkuldResult<T> (httpStatusCode, data);
 	}
 
-	public static SkuldResult<T> Error (HttpStatusCode httpStatusCode, SkuldExceptionType skuldExceptionType, params object[] parameters)
+	public static SkuldResult<T> Error (HttpStatusCode httpStatusCode, SkuldErrorType skuldExceptionType, params object?[] parameters)
 	{
 		return new SkuldResult<T> (httpStatusCode, skuldExceptionType, parameters);
 	}
 
 	public IActionResult Match (
 		Func<HttpStatusCode, T, IActionResult> onSuccess,
-		Func<HttpStatusCode, SkuldExceptionType, object[], IActionResult> onError)
+		Func<HttpStatusCode, SkuldErrorType, object?[], IActionResult> onError)
 	{
-		return IsSuccess ? onSuccess (HttpStatusCode, Data!) : onError (HttpStatusCode, SkuldExceptionType, Parameters);
+		return IsSuccess ? onSuccess (HttpStatusCode, Data!) : onError (HttpStatusCode, SkuldErrorType, Parameters);
 	}
 
 	public static SkuldResult<T> MapFromError<TSource> (SkuldResult<TSource> source)
 	{
-		return Error (source.HttpStatusCode, source.SkuldExceptionType, source.Parameters);
+		return Error (source.HttpStatusCode, source.SkuldErrorType, source.Parameters);
 	}
 
 	public SkuldResult<TD> ContinueWith<TD> (Func<T, SkuldResult<TD>> lambda)
 	{
 		if (IsError)
 		{
-			return new SkuldResult<TD> (HttpStatusCode, SkuldExceptionType, Parameters);
+			return new SkuldResult<TD> (HttpStatusCode, SkuldErrorType, Parameters);
 		}
 
 		return lambda (Data!);
@@ -65,7 +64,7 @@ public class SkuldResult<T>
 	{
 		if (IsError)
 		{
-			return new SkuldResult<TD> (HttpStatusCode, SkuldExceptionType, Parameters);
+			return new SkuldResult<TD> (HttpStatusCode, SkuldErrorType, Parameters);
 		}
 
 		return lambda (Data!).Result;

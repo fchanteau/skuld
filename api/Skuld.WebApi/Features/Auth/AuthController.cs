@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Infrastructure.ActionFilters;
 using Skuld.WebApi.Infrastructure.Constants;
+using Skuld.WebApi.Infrastructure.ErrorHandling;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
@@ -32,9 +33,9 @@ namespace Skuld.WebApi.Features.Auth
 		[ValidateInputModel]
 		public async Task<IActionResult> CreateUser ([FromBody] AddUserPayload payload)
 		{
-			await _authService.AddUserAsync (payload);
+			var result = await _authService.AddUserAsync (payload);
 
-			return StatusCode (201);
+			return ToActionResult (result);
 		}
 
 		[AllowAnonymous]
@@ -48,7 +49,7 @@ namespace Skuld.WebApi.Features.Auth
 		{
 			var result = await _authService.LoginAsync (payload);
 
-			return Ok (result);
+			return ToActionResult (result);
 		}
 
 		[HttpPost ("refreshtoken")]
@@ -57,17 +58,17 @@ namespace Skuld.WebApi.Features.Auth
 		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
 		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
 		[ValidateInputModel]
-		public async Task<IActionResult> RefreshToken ([FromBody] RefreshTokenPayload payload)
+		public IActionResult RefreshToken ([FromBody] RefreshTokenPayload payload)
 		{
-			var userId = GetUserIdFromToken ();
+			var result = GetUserIdFromToken ()
+				.ContinueWithAsync (userId => _authService.ValidRefreshToken (userId, payload))
+				.ContinueWith (newToken => SkuldResult<TokenInfoResponse>.Success (new TokenInfoResponse
+				{
+					Token = newToken,
+					RefreshToken = payload.RefreshToken
+				}));
 
-			var newToken = await _authService.ValidRefreshToken (userId, payload);
-
-			return Ok (new TokenInfoResponse
-			{
-				Token = newToken,
-				RefreshToken = payload.RefreshToken
-			});
+			return ToActionResult (result);
 		}
 	}
 }

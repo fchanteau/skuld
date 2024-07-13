@@ -5,7 +5,7 @@ using Skuld.WebApi.Features.Users.Dto;
 using Skuld.WebApi.Infrastructure.Constants;
 using Skuld.WebApi.Infrastructure.ErrorHandling;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace Skuld.WebApi.Features.Users;
 
@@ -29,30 +29,17 @@ public class UserController : BaseApiController
 	[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (UserResponse))]
 	[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
 	[AllowAnonymous]
-	public async Task<IActionResult> GetUser ()
+	public IActionResult GetUser ()
 	{
-		var user = await _userService.GetUserAsync (100);
-
-		return Ok (user);
-	}
-
-	[HttpGet ("me/result")]
-	[ProducesResponseType (StatusCodes.Status200OK, Type = typeof (UserResponse))]
-	[ProducesResponseType (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
-	[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (UserResponse))]
-	[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
-	[AllowAnonymous]
-	public IActionResult GetUserResult ()
-	{
-		var userResult = GetUserIdFromTokenResult ()
+		var userResult = GetUserIdFromToken ()
 			.ContinueWith (EnsureUserId)
-			.ContinueWithAsync (userId => _userService.GetUserResultAsync (userId));
+			.ContinueWithAsync (_userService.GetUserResultAsync);
 
 		return ToActionResult (userResult);
 	}
 
 	private SkuldResult<long> EnsureUserId (long userId)
 	{
-		return SkuldResult<long>.Success (userId);
+		return SkuldResult<long>.Error (HttpStatusCode.BadGateway, SkuldErrorType.BadFormatId, "");
 	}
 }

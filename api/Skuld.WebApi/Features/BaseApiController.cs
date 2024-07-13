@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Infrastructure.Constants;
 using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System;
@@ -16,18 +15,7 @@ public abstract class BaseApiController : ControllerBase
 	{
 	}
 
-	protected long GetUserIdFromToken ()
-	{
-		var userIdClaim = User.Claims.FirstOrDefault (x => x.Type.Equals (CustomClaimTypes.UserId));
-
-		// TODO FCU : Create a SkuldExceptionType for this below
-		if (userIdClaim == null)
-			throw new SkuldException (System.Net.HttpStatusCode.InternalServerError, SkuldExceptionType.RefreshTokenInvalid, "");
-
-		return long.TryParse (userIdClaim.Value, out var id) ? id : 0;
-	}
-
-	protected SkuldResult<long> GetUserIdFromTokenResult ()
+	protected SkuldResult<long> GetUserIdFromToken ()
 	{
 		var userIdClaim = User.Claims.FirstOrDefault (x => x.Type.Equals (CustomClaimTypes.UserId));
 
@@ -36,7 +24,7 @@ public abstract class BaseApiController : ControllerBase
 			return SkuldResult<long>.Success (id);
 		}
 
-		return SkuldResult<long>.Error (HttpStatusCode.InternalServerError, SkuldExceptionType.RefreshTokenInvalid, "");
+		return SkuldResult<long>.Error (HttpStatusCode.InternalServerError, SkuldErrorType.RefreshTokenInvalid, "");
 	}
 
 	protected Task<string?> GetAccessTokenAsync ()
@@ -49,7 +37,7 @@ public abstract class BaseApiController : ControllerBase
 		return skuldResult.Match (ToSuccessActionResult, ToErrorActionResult);
 	}
 
-	private IActionResult ToErrorActionResult (HttpStatusCode httpStatusCode, SkuldExceptionType skuldExceptionType, params object[] parameters)
+	private IActionResult ToErrorActionResult (HttpStatusCode httpStatusCode, SkuldErrorType skuldExceptionType, params object?[] parameters)
 	{
 		string? message;
 
@@ -74,6 +62,7 @@ public abstract class BaseApiController : ControllerBase
 		return httpStatusCode switch
 		{
 			HttpStatusCode.OK => Ok (data),
+			HttpStatusCode.Created => StatusCode (201),
 			HttpStatusCode.NoContent => NoContent (),
 			_ => throw new ArgumentException ("HTTP status code not handled", nameof (httpStatusCode))
 		};
