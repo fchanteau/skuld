@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Skuld.WebApi.Exceptions;
-using Skuld.WebApi.Ressources;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -46,19 +45,19 @@ namespace Skuld.WebApi.Infrastructure.Exceptions
 			httpContext.Response.StatusCode = (int)ex.HttpStatusCode;
 
 			string? message = "";
-			if (ex.Parameters is null)
-			{
-				message = ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ());
-			}
-			else if (ex.SkuldExceptionType == SkuldExceptionType.ValidationFailed)
-			{
-				// TODO FCU : better handling here
-				message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()) ?? throw new Exception (), string.Join (" | ", ex.Parameters));
-			}
-			else
-			{
-				message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()) ?? throw new Exception (), ex.Parameters);
-			}
+			//if (ex.Parameters is null)
+			//{
+			//	message = ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ());
+			//}
+			//else if (ex.SkuldExceptionType == SkuldExceptionType.ValidationFailed)
+			//{
+			//	// TODO FCU : better handling here
+			//	message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()) ?? throw new Exception (), string.Join (" | ", ex.Parameters));
+			//}
+			//else
+			//{
+			//	message = string.Format (ErrorMessage.ResourceManager.GetString (ex.SkuldExceptionType.ToString ()) ?? throw new Exception (), ex.Parameters);
+			//}
 
 			_logger.LogError (message);
 			return httpContext.Response.WriteAsJsonAsync (new ProblemDetails ()

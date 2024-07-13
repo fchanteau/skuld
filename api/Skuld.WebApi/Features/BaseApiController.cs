@@ -27,6 +27,18 @@ public abstract class BaseApiController : ControllerBase
 		return long.TryParse (userIdClaim.Value, out var id) ? id : 0;
 	}
 
+	protected SkuldResult<long> GetUserIdFromTokenResult ()
+	{
+		var userIdClaim = User.Claims.FirstOrDefault (x => x.Type.Equals (CustomClaimTypes.UserId));
+
+		if (long.TryParse (userIdClaim?.Value, out var id))
+		{
+			return SkuldResult<long>.Success (id);
+		}
+
+		return SkuldResult<long>.Error (HttpStatusCode.InternalServerError, SkuldExceptionType.RefreshTokenInvalid, "");
+	}
+
 	protected Task<string?> GetAccessTokenAsync ()
 	{
 		return HttpContext.GetTokenAsync ("access_token");
