@@ -2,9 +2,9 @@
 using NSubstitute;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
-using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Features.Users;
 using Skuld.WebApi.Features.Users.Dto;
+using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System.Linq.Expressions;
 using System.Net;
 
@@ -68,6 +68,6 @@ public class UserServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.UserNotFound && ex.HttpStatusCode == HttpStatusCode.NotFound);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.UserNotFound && ex.HttpStatusCode == HttpStatusCode.NotFound);
 	}
 }

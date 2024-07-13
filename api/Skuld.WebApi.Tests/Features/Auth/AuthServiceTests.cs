@@ -3,10 +3,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
-using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Features.Auth;
 using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Helpers;
+using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System.Linq.Expressions;
 using System.Net;
 
@@ -81,7 +81,7 @@ public class AuthServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.UserAlreadyExist && ex.HttpStatusCode == HttpStatusCode.BadRequest);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.UserAlreadyExist && ex.HttpStatusCode == HttpStatusCode.BadRequest);
 	}
 
 	[Fact]
@@ -226,7 +226,7 @@ public class AuthServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
 	}
 
 	[Fact]
@@ -260,7 +260,7 @@ public class AuthServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
 	}
 
 	[Fact]
@@ -300,7 +300,7 @@ public class AuthServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
 	}
 
 	[Fact]
@@ -340,7 +340,7 @@ public class AuthServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.UserLoginFailed && ex.HttpStatusCode == HttpStatusCode.BadRequest);
 	}
 
 	[Fact]
@@ -381,7 +381,7 @@ public class AuthServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.RefreshTokenInvalid && ex.HttpStatusCode == HttpStatusCode.BadRequest);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.RefreshTokenInvalid && ex.HttpStatusCode == HttpStatusCode.BadRequest);
 	}
 
 	[Fact]
@@ -402,6 +402,6 @@ public class AuthServiceTests
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
-			.Where (ex => ex.SkuldExceptionType == SkuldExceptionType.UserNotFound && ex.HttpStatusCode == HttpStatusCode.InternalServerError);
+			.Where (ex => ex.SkuldExceptionType == SkuldErrorType.UserNotFound && ex.HttpStatusCode == HttpStatusCode.InternalServerError);
 	}
 }

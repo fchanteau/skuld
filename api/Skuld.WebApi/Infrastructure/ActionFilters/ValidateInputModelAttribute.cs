@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Skuld.WebApi.Exceptions;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,21 +13,28 @@ namespace Skuld.WebApi.Infrastructure.ActionFilters
 		{
 			var model = context.ActionArguments.FirstOrDefault ().Value;
 
-			// TODO FCU : check this exception and maybe create SkuldExceptionType
-			if (model is null)
-			{
-				throw new SkuldException (System.Net.HttpStatusCode.BadRequest, SkuldExceptionType.ValidationFailed);
-			}
-
 			if (!Validate (model, out var validationResults))
 			{
-				throw new SkuldException (System.Net.HttpStatusCode.BadRequest, SkuldExceptionType.ValidationFailed, validationResults.Select (x => x.ErrorMessage).ToArray ());
+				var problemDetails = new ProblemDetails ()
+				{
+					Status = 400,
+					Title = SkuldErrorType.ValidationFailed.ToString (),
+					Detail = string.Join ('|', validationResults.Select (x => x.ErrorMessage)),
+					Type = $"https://httpstatuses.com/400",
+					Instance = context.HttpContext.Request.Path
+				};
+				context.Result = new ObjectResult (problemDetails)
+				{
+					StatusCode = 400
+				};
 			}
 		}
 
-		protected bool Validate<T> (T obj, out ICollection<ValidationResult> results) where T : notnull
+		protected bool Validate<T> (T? obj, out ICollection<ValidationResult> results) where T : class
 		{
 			results = new List<ValidationResult> ();
+
+			if (obj is null) return false;
 
 			return Validator.TryValidateObject (obj, new ValidationContext (obj), results, true);
 		}

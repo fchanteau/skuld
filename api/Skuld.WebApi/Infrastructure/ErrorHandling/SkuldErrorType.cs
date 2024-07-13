@@ -1,6 +1,6 @@
-﻿namespace Skuld.WebApi.Exceptions;
+﻿namespace Skuld.WebApi.Infrastructure.ErrorHandling;
 
-public enum SkuldExceptionType
+public enum SkuldErrorType
 {
 	// General
 	None = 0,

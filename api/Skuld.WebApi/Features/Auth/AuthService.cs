@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
-using Skuld.WebApi.Exceptions;
 using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Helpers;
+using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -13,9 +13,9 @@ namespace Skuld.WebApi.Features.Auth;
 
 public interface IAuthService
 {
-	Task AddUserAsync (AddUserPayload payload);
-	Task<TokenInfoResponse> LoginAsync (LoginPayload payload);
-	Task<string> ValidRefreshToken (long userId, RefreshTokenPayload payload);
+	Task<SkuldResult<Unit>> AddUserAsync (AddUserPayload payload);
+	Task<SkuldResult<TokenInfoResponse>> LoginAsync (LoginPayload payload);
+	Task<SkuldResult<string>> ValidRefreshToken (long userId, RefreshTokenPayload payload);
 }
 
 public class AuthService : BaseService, IAuthService
@@ -48,12 +48,12 @@ public class AuthService : BaseService, IAuthService
 
 	#region Public methods
 
-	public async Task AddUserAsync (AddUserPayload payload)
+	public async Task<SkuldResult<Unit>> AddUserAsync (AddUserPayload payload)
 	{
 		// check if user already exist with the email
 		var userAlreadyExist = await UnitOfWork.UserRepository.AnyAsync (x => x.Email.Equals (payload.Email));
 		if (userAlreadyExist)
-			throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserAlreadyExist, payload.Email);
+			return SkuldResult<Unit>.Error (HttpStatusCode.BadRequest, SkuldErrorType.UserAlreadyExist, payload.Email);
 
 		var user = _mapper.Map<AddUserPayload, User> (payload);
 
@@ -76,9 +76,11 @@ public class AuthService : BaseService, IAuthService
 
 		// commit changes
 		await UnitOfWork.SaveChangesAsync ();
+
+		return SkuldResult<Unit>.Success (Unit.Instance, HttpStatusCode.Created);
 	}
 
-	public async Task<TokenInfoResponse> LoginAsync (LoginPayload payload)
+	public async Task<SkuldResult<TokenInfoResponse>> LoginAsync (LoginPayload payload)
 	{
 		var cryptedPassword = _passwordProvider.GenerateCipherPassword (payload.Password);
 
@@ -86,7 +88,7 @@ public class AuthService : BaseService, IAuthService
 		var validPassword = user?.Passwords.Any (x => x.IsActive && x.Value == cryptedPassword) ?? false;
 		if (user is null || !validPassword)
 		{
-			throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
+			return SkuldResult<TokenInfoResponse>.Error (HttpStatusCode.BadRequest, SkuldErrorType.UserLoginFailed);
 		}
 
 		var token = _tokenProvider.CreateToken (user);
@@ -97,7 +99,7 @@ public class AuthService : BaseService, IAuthService
 
 		if (refreshToken is null)
 		{
-			throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.UserLoginFailed);
+			return SkuldResult<TokenInfoResponse>.Error (HttpStatusCode.BadRequest, SkuldErrorType.UserLoginFailed);
 		}
 
 		if (refreshToken.ExpiredAt < _dateTimeProvider.UtcNow)
@@ -107,21 +109,21 @@ public class AuthService : BaseService, IAuthService
 			await UnitOfWork.SaveChangesAsync ();
 		}
 
-		return new TokenInfoResponse
+		return SkuldResult<TokenInfoResponse>.Success (new TokenInfoResponse
 		{
 			Token = token,
 			RefreshToken = refreshToken.Value
-		};
+		});
 	}
 
 
 
-	public async Task<string> ValidRefreshToken (long userId, RefreshTokenPayload payload)
+	public async Task<SkuldResult<string>> ValidRefreshToken (long userId, RefreshTokenPayload payload)
 	{
 		var response = await UnitOfWork.RefreshTokenRepository.TryGetOneAsync (filter: x => x.Value == payload.RefreshToken && x.UserId == userId && x.ExpiredAt > _dateTimeProvider.UtcNow);
 		if (response is null)
 		{
-			throw new SkuldException (HttpStatusCode.BadRequest, SkuldExceptionType.RefreshTokenInvalid);
+			return SkuldResult<string>.Error (HttpStatusCode.BadRequest, SkuldErrorType.RefreshTokenInvalid);
 		}
 
 		var user = await UnitOfWork.UserRepository.TryGetByIdAsync (userId);
@@ -129,10 +131,10 @@ public class AuthService : BaseService, IAuthService
 		if (user is null)
 		{
 			// Should never happen
-			throw new SkuldException (HttpStatusCode.InternalServerError, SkuldExceptionType.UserNotFound);
+			return SkuldResult<string>.Error (HttpStatusCode.InternalServerError, SkuldErrorType.UserNotFound);
 		}
 
-		return _tokenProvider.CreateToken (user);
+		return SkuldResult<string>.Success (_tokenProvider.CreateToken (user));
 	}
 
 	#endregion
