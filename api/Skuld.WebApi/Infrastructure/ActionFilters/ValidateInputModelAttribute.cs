@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using Skuld.WebApi.Infrastructure.ErrorHandling;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Skuld.WebApi.Infrastructure.ActionFilters
 {
@@ -11,32 +10,20 @@ namespace Skuld.WebApi.Infrastructure.ActionFilters
 	{
 		public override void OnActionExecuting (ActionExecutingContext context)
 		{
-			var model = context.ActionArguments.FirstOrDefault ().Value;
-
-			if (!Validate (model, out var validationResults))
+			if (!context.ModelState.IsValid)
 			{
-				var problemDetails = new ProblemDetails ()
-				{
-					Status = 400,
-					Title = SkuldErrorType.ValidationFailed.ToString (),
-					Detail = string.Join ('|', validationResults.Select (x => x.ErrorMessage)),
-					Type = $"https://httpstatuses.com/400",
-					Instance = context.HttpContext.Request.Path
-				};
+				var problemDetailsFactory = context.HttpContext.RequestServices.GetService<ProblemDetailsFactory> ()!;
+
+				var problemDetails = problemDetailsFactory.CreateValidationProblemDetails (
+					context.HttpContext,
+					context.ModelState,
+					statusCode: 400,
+					title: SkuldErrorType.ValidationFailed.ToString ());
 				context.Result = new ObjectResult (problemDetails)
 				{
 					StatusCode = 400
 				};
 			}
-		}
-
-		protected bool Validate<T> (T? obj, out ICollection<ValidationResult> results) where T : class
-		{
-			results = new List<ValidationResult> ();
-
-			if (obj is null) return false;
-
-			return Validator.TryValidateObject (obj, new ValidationContext (obj), results, true);
 		}
 	}
 }
