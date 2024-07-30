@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Skuld.WebApi.Infrastructure.Constants;
 using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System;
@@ -11,8 +12,11 @@ namespace Skuld.WebApi.Features;
 
 public abstract class BaseApiController : ControllerBase
 {
-	protected BaseApiController () : base ()
+	private readonly ProblemDetailsFactory _problemDetailsFactory;
+
+	protected BaseApiController (ProblemDetailsFactory problemDetailsFactory) : base ()
 	{
+		_problemDetailsFactory = problemDetailsFactory;
 	}
 
 	protected SkuldResult<long> GetUserIdFromToken ()
@@ -50,11 +54,16 @@ public abstract class BaseApiController : ControllerBase
 			message = "message wiothout string format";
 		}
 
-		return Problem (message,
-			HttpContext.Request.Path,
-			(int)httpStatusCode,
-			skuldExceptionType.ToString (),
-			$"https://httpstatuses.com/{httpStatusCode}");
+		var problemDetails = _problemDetailsFactory.CreateProblemDetails (
+			HttpContext,
+			statusCode: (int)httpStatusCode,
+			title: skuldExceptionType.ToString (),
+			detail: message);
+
+		return new ObjectResult (problemDetails)
+		{
+			StatusCode = (int)httpStatusCode
+		};
 	}
 
 	private IActionResult ToSuccessActionResult<T> (HttpStatusCode httpStatusCode, T data)

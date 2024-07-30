@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Infrastructure.ActionFilters;
 using Skuld.WebApi.Infrastructure.Constants;
@@ -19,7 +20,7 @@ namespace Skuld.WebApi.Features.Auth
 	{
 		private readonly IAuthService _authService;
 
-		public AuthController (IAuthService authService)
+		public AuthController (IAuthService authService, ProblemDetailsFactory problemDetailsFactory) : base (problemDetailsFactory)
 		{
 			_authService = authService;
 		}

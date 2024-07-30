@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Skuld.WebApi.Features.Users.Dto;
 using Skuld.WebApi.Infrastructure.Constants;
 using Skuld.WebApi.Infrastructure.ErrorHandling;
@@ -18,7 +19,7 @@ public class UserController : BaseApiController
 {
 	private readonly IUserService _userService;
 
-	public UserController (IUserService userService)
+	public UserController (IUserService userService, ProblemDetailsFactory problemDetailsFactory) : base (problemDetailsFactory)
 	{
 		_userService = userService;
 	}
