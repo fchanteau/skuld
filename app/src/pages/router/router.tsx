@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { Role } from '@/features/user';
 
 import { AuthPage } from '../AuthPage';
+import ChakraPage from '../ChakraPage';
 import { DashboardPage } from '../DashboardPage';
 import { Layout } from '../layout';
 
@@ -13,6 +14,11 @@ export const router = createBrowserRouter([
     id: 'auth',
     path: '/auth',
     element: <AuthPage />,
+  },
+  {
+    id: 'chakra',
+    path: '/chakra',
+    element: <ChakraPage />,
   },
   {
     id: 'root',
