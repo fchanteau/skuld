@@ -14,12 +14,16 @@
     "generate-pwa-assets": "pwa-assets-generator"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.9.0",
     "@reduxjs/toolkit": "^2.2.6",
     "@types/node": "~20.14.10",
     "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
+    "framer-motion": "^11.3.28",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

@@ -26,9 +26,17 @@ public class UserController : BaseApiController
 
 	[HttpGet ("me")]
 	[ProducesResponseType (StatusCodes.Status200OK, Type = typeof (UserResponse))]
+	[ProducesResponseType (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
+	[ProducesResponseType (StatusCodes.Status401Unauthorized, Type = typeof (ProblemDetails))]
+	[ProducesResponseType (StatusCodes.Status403Forbidden, Type = typeof (ProblemDetails))]
 	[ProducesResponseType (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
+	[ProducesResponseType (StatusCodes.Status500InternalServerError, Type = typeof (ProblemDetails))]
 	[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (UserResponse))]
+	[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
+	[SwaggerResponse (StatusCodes.Status401Unauthorized, Type = typeof (ProblemDetails))]
+	[SwaggerResponse (StatusCodes.Status403Forbidden, Type = typeof (ProblemDetails))]
 	[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
+	[SwaggerResponse (StatusCodes.Status500InternalServerError, Type = typeof (ProblemDetails))]
 	[AllowAnonymous]
 	public IActionResult GetUser ()
 	{

@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
+import { ChakraProvider } from '@chakra-ui/react';
 
 import { IntlProvider } from './common/intl';
 import { router } from './pages/router';
@@ -15,7 +16,9 @@ const App = (): JSX.Element => {
     <Provider store={store}>
       <IntlProvider>
         <StrictMode>
-          <MainContainer />
+          <ChakraProvider>
+            <MainContainer />
+          </ChakraProvider>
         </StrictMode>
       </IntlProvider>
     </Provider>
