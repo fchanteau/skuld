@@ -6,7 +6,6 @@ using Skuld.WebApi.Common.Constants;
 using Skuld.WebApi.Common.ErrorHandling;
 using Skuld.WebApi.Features.Users.Dto;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Skuld.WebApi.Features.Users;
@@ -39,17 +38,11 @@ public class UserController : BaseApiController
 	[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
 	[SwaggerResponse (StatusCodes.Status500InternalServerError, Type = typeof (ProblemDetails))]
 	[AllowAnonymous]
-	public async Task<IActionResult> GetUser ()
+	public async Task<IActionResult> GetUserAsync ()
 	{
 		var userResult = await GetUserIdFromToken ()
-			.Then (EnsureUserId)
 			.ThenAsync (_userService.GetUserResultAsync);
 
 		return ToActionResult (userResult);
-	}
-
-	private SkuldResult<long> EnsureUserId (long userId)
-	{
-		return SkuldResult<long>.Error (HttpStatusCode.BadGateway, SkuldErrorType.BadFormatId, "");
 	}
 }

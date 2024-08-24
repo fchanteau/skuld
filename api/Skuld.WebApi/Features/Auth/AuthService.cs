@@ -15,7 +15,7 @@ public interface IAuthService
 {
 	Task<SkuldResult<Unit>> AddUserAsync (AddUserPayload payload);
 	Task<SkuldResult<TokenInfoResponse>> LoginAsync (LoginPayload payload);
-	Task<SkuldResult<string>> ValidRefreshToken (long userId, RefreshTokenPayload payload);
+	Task<SkuldResult<string>> ValidRefreshTokenAsync (long userId, RefreshTokenPayload payload);
 }
 
 public class AuthService : BaseService, IAuthService
@@ -140,7 +140,7 @@ public class AuthService : BaseService, IAuthService
 			.ThenAsync (ManageTokens);
 	}
 
-	public async Task<SkuldResult<string>> ValidRefreshToken (long userId, RefreshTokenPayload payload)
+	public async Task<SkuldResult<string>> ValidRefreshTokenAsync (long userId, RefreshTokenPayload payload)
 	{
 		var response = await UnitOfWork.RefreshTokenRepository.TryGetOneAsync (filter: x => x.Value == payload.RefreshToken && x.UserId == userId && x.ExpiredAt > _dateTimeProvider.UtcNow);
 		if (response is null)
