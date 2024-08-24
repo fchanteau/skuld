@@ -359,7 +359,7 @@ public class AuthServiceTests
 		_tokenProvider.CreateToken (Arg.Any<User> ()).Returns ("token");
 
 		// When
-		var result = await _authService.ValidRefreshToken (userId, refreshTokenPayload);
+		var result = await _authService.ValidRefreshTokenAsync (userId, refreshTokenPayload);
 
 		// Then
 		result.Should ().Be ("token");
@@ -377,7 +377,7 @@ public class AuthServiceTests
 		_refreshTokenRepository.TryGetOneAsync (filter: Arg.Any<Expression<Func<RefreshToken, bool>>> ()).Returns (Task.FromResult<RefreshToken?> (null));
 
 		// When
-		var action = () => _authService.ValidRefreshToken (userId, refreshTokenPayload);
+		var action = () => _authService.ValidRefreshTokenAsync (userId, refreshTokenPayload);
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()
@@ -398,7 +398,7 @@ public class AuthServiceTests
 		});
 		_userRepository.TryGetByIdAsync (userId).Returns (Task.FromResult<User?> (null));
 		// When
-		var action = () => _authService.ValidRefreshToken (userId, refreshTokenPayload);
+		var action = () => _authService.ValidRefreshTokenAsync (userId, refreshTokenPayload);
 
 		// Then
 		await action.Should ().ThrowAsync<SkuldException> ()

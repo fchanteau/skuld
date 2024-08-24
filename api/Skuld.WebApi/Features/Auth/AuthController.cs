@@ -32,7 +32,7 @@ namespace Skuld.WebApi.Features.Auth
 		[SwaggerResponse (StatusCodes.Status201Created)]
 		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
 		[ValidateInputModel]
-		public async Task<IActionResult> CreateUser ([FromBody] AddUserPayload payload)
+		public async Task<IActionResult> CreateUserAsync ([FromBody] AddUserPayload payload)
 		{
 			var result = await _authService.AddUserAsync (payload);
 
@@ -46,7 +46,7 @@ namespace Skuld.WebApi.Features.Auth
 		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
 		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
 		[ValidateInputModel]
-		public async Task<IActionResult> Login ([FromBody] LoginPayload payload)
+		public async Task<IActionResult> LoginAsync ([FromBody] LoginPayload payload)
 		{
 			var result = await _authService.LoginAsync (payload);
 
@@ -59,10 +59,10 @@ namespace Skuld.WebApi.Features.Auth
 		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
 		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
 		[ValidateInputModel]
-		public async Task<IActionResult> RefreshToken ([FromBody] RefreshTokenPayload payload)
+		public async Task<IActionResult> RefreshTokenAsync ([FromBody] RefreshTokenPayload payload)
 		{
 			var result = await GetUserIdFromToken ()
-				.ThenAsync (userId => _authService.ValidRefreshToken (userId, payload))
+				.ThenAsync (userId => _authService.ValidRefreshTokenAsync (userId, payload))
 				.Then (newToken => SkuldResult<TokenInfoResponse>.Success (new TokenInfoResponse
 				{
 					Token = newToken,
