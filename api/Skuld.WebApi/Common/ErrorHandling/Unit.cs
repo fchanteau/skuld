@@ -1,4 +1,4 @@
-﻿namespace Skuld.WebApi.Infrastructure.ErrorHandling;
+﻿namespace Skuld.WebApi.Common.ErrorHandling;
 
 public class Unit
 {

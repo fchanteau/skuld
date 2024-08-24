@@ -2,11 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Skuld.WebApi.Infrastructure.Configuration.Options;
+using Skuld.WebApi.Common.Configuration.Options;
 using System;
 using System.Text;
 
-namespace Skuld.WebApi.Infrastructure.Configuration
+namespace Skuld.WebApi.Common.Configuration
 {
 	public static class AuthenticationConfiguration
 	{

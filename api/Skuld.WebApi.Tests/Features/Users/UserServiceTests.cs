@@ -2,9 +2,9 @@
 using NSubstitute;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
+using Skuld.WebApi.Common.ErrorHandling;
 using Skuld.WebApi.Features.Users;
 using Skuld.WebApi.Features.Users.Dto;
-using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System.Linq.Expressions;
 using System.Net;
 

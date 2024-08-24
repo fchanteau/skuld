@@ -1,6 +1,6 @@
 ﻿using Skuld.WebApi.Features.Users.Dto;
 
-namespace Skuld.WebApi.Infrastructure.Authorization
+namespace Skuld.WebApi.Common.Authorization
 {
 	public class MinRoleLevelRequirement : RoleLevelRequirement
 	{

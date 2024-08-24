@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
+using Skuld.WebApi.Common.Authorization;
+using Skuld.WebApi.Common.Constants;
 using Skuld.WebApi.Features.Users.Dto;
-using Skuld.WebApi.Infrastructure.Authorization;
-using Skuld.WebApi.Infrastructure.Constants;
 
-namespace Skuld.WebApi.Infrastructure.Configuration
+namespace Skuld.WebApi.Common.Configuration
 {
 	public static class AuthorizationConfiguration
 	{

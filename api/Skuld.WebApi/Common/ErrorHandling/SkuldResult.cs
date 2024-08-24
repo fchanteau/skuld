@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
-using System.Threading.Tasks;
 
-namespace Skuld.WebApi.Infrastructure.ErrorHandling;
+namespace Skuld.WebApi.Common.ErrorHandling;
 
 public class SkuldResult<T>
 {
-	private HttpStatusCode HttpStatusCode { get; }
-	private SkuldErrorType SkuldErrorType { get; } = SkuldErrorType.None;
-	private object?[] Parameters { get; } = Array.Empty<object> ();
-	private T? Data { get; }
+	public HttpStatusCode HttpStatusCode { get; }
+	public SkuldErrorType SkuldErrorType { get; } = SkuldErrorType.None;
+	public object?[] Parameters { get; } = Array.Empty<object> ();
+	public T? Data { get; }
 
-	private bool IsSuccess => Data is not null && SkuldErrorType == SkuldErrorType.None;
-	private bool IsError => !IsSuccess;
+	public bool IsSuccess => Data is not null && SkuldErrorType == SkuldErrorType.None;
+	public bool IsError => !IsSuccess;
 
 	private SkuldResult (HttpStatusCode httpStatusCode, SkuldErrorType skuldErrorType, object?[] parameters)
 	{
@@ -48,25 +47,5 @@ public class SkuldResult<T>
 	public static SkuldResult<T> MapFromError<TSource> (SkuldResult<TSource> source)
 	{
 		return Error (source.HttpStatusCode, source.SkuldErrorType, source.Parameters);
-	}
-
-	public SkuldResult<TD> ContinueWith<TD> (Func<T, SkuldResult<TD>> lambda)
-	{
-		if (IsError)
-		{
-			return new SkuldResult<TD> (HttpStatusCode, SkuldErrorType, Parameters);
-		}
-
-		return lambda (Data!);
-	}
-
-	public SkuldResult<TD> ContinueWithAsync<TD> (Func<T, Task<SkuldResult<TD>>> lambda)
-	{
-		if (IsError)
-		{
-			return new SkuldResult<TD> (HttpStatusCode, SkuldErrorType, Parameters);
-		}
-
-		return lambda (Data!).Result;
 	}
 }

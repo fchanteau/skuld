@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Skuld.Data;
-using Skuld.WebApi.Infrastructure.Configuration;
-using Skuld.WebApi.Infrastructure.Configuration.Options;
+using Skuld.WebApi.Common.Configuration;
+using Skuld.WebApi.Common.Configuration.Options;
 
 namespace Skuld.WebApi;
 

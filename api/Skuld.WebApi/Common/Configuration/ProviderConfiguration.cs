@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Skuld.WebApi.Helpers;
 
-namespace Skuld.WebApi.Infrastructure.Configuration
+namespace Skuld.WebApi.Common.Configuration
 {
 	public static class ProviderConfiguration
 	{

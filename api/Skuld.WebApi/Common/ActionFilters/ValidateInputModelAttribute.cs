@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Skuld.WebApi.Infrastructure.ErrorHandling;
+using Skuld.WebApi.Common.ErrorHandling;
 
-namespace Skuld.WebApi.Infrastructure.ActionFilters
+namespace Skuld.WebApi.Common.ActionFilters
 {
 	public class ValidateInputModelAttribute : ActionFilterAttribute
 	{

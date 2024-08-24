@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Skuld.WebApi.Common.Constants;
+using Skuld.WebApi.Common.ErrorHandling;
 using Skuld.WebApi.Features.Users.Dto;
-using Skuld.WebApi.Infrastructure.Constants;
-using Skuld.WebApi.Infrastructure.ErrorHandling;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Skuld.WebApi.Features.Users;
 
@@ -38,11 +39,11 @@ public class UserController : BaseApiController
 	[SwaggerResponse (StatusCodes.Status404NotFound, Type = typeof (ProblemDetails))]
 	[SwaggerResponse (StatusCodes.Status500InternalServerError, Type = typeof (ProblemDetails))]
 	[AllowAnonymous]
-	public IActionResult GetUser ()
+	public async Task<IActionResult> GetUser ()
 	{
-		var userResult = GetUserIdFromToken ()
-			.ContinueWith (EnsureUserId)
-			.ContinueWithAsync (_userService.GetUserResultAsync);
+		var userResult = await GetUserIdFromToken ()
+			.Then (EnsureUserId)
+			.ThenAsync (_userService.GetUserResultAsync);
 
 		return ToActionResult (userResult);
 	}

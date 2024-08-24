@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Skuld.WebApi.Infrastructure.Configuration.Options;
+using Skuld.WebApi.Common.Configuration.Options;
 
-namespace Skuld.WebApi.Infrastructure.Configuration
+namespace Skuld.WebApi.Common.Configuration
 {
 	public static class OptionsConfiguration
 	{

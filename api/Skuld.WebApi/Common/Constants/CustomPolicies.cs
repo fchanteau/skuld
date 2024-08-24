@@ -1,4 +1,4 @@
-﻿namespace Skuld.WebApi.Infrastructure.Constants
+﻿namespace Skuld.WebApi.Common.Constants
 {
 	public static class CustomPolicies
 	{
