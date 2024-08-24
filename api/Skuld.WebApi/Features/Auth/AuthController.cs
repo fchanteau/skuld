@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Skuld.WebApi.Common.ActionFilters;
+using Skuld.WebApi.Common.Constants;
+using Skuld.WebApi.Common.ErrorHandling;
 using Skuld.WebApi.Features.Auth.Dto;
-using Skuld.WebApi.Infrastructure.ActionFilters;
-using Skuld.WebApi.Infrastructure.Constants;
-using Skuld.WebApi.Infrastructure.ErrorHandling;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
@@ -59,11 +59,11 @@ namespace Skuld.WebApi.Features.Auth
 		[SwaggerResponse (StatusCodes.Status200OK, Type = typeof (TokenInfoResponse))]
 		[SwaggerResponse (StatusCodes.Status400BadRequest, Type = typeof (ProblemDetails))]
 		[ValidateInputModel]
-		public IActionResult RefreshToken ([FromBody] RefreshTokenPayload payload)
+		public async Task<IActionResult> RefreshToken ([FromBody] RefreshTokenPayload payload)
 		{
-			var result = GetUserIdFromToken ()
-				.ContinueWithAsync (userId => _authService.ValidRefreshToken (userId, payload))
-				.ContinueWith (newToken => SkuldResult<TokenInfoResponse>.Success (new TokenInfoResponse
+			var result = await GetUserIdFromToken ()
+				.ThenAsync (userId => _authService.ValidRefreshToken (userId, payload))
+				.Then (newToken => SkuldResult<TokenInfoResponse>.Success (new TokenInfoResponse
 				{
 					Token = newToken,
 					RefreshToken = payload.RefreshToken

@@ -3,10 +3,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Skuld.Data.Entities;
 using Skuld.Data.UnitOfWork;
+using Skuld.WebApi.Common.ErrorHandling;
 using Skuld.WebApi.Features.Auth;
 using Skuld.WebApi.Features.Auth.Dto;
 using Skuld.WebApi.Helpers;
-using Skuld.WebApi.Infrastructure.ErrorHandling;
 using System.Linq.Expressions;
 using System.Net;
 

@@ -3,7 +3,7 @@ using Skuld.Data.UnitOfWork;
 using Skuld.WebApi.Features.Auth;
 using Skuld.WebApi.Features.Users;
 
-namespace Skuld.WebApi.Infrastructure.Configuration;
+namespace Skuld.WebApi.Common.Configuration;
 
 public static class ServiceConfiguration
 {

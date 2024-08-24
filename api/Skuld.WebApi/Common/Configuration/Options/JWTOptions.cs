@@ -1,4 +1,4 @@
-﻿namespace Skuld.WebApi.Infrastructure.Configuration.Options
+﻿namespace Skuld.WebApi.Common.Configuration.Options
 {
 	public class JwtOptions
 	{

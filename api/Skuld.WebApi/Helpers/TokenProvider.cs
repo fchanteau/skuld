@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Skuld.Data.Entities;
-using Skuld.WebApi.Infrastructure.Configuration.Options;
-using Skuld.WebApi.Infrastructure.Constants;
+using Skuld.WebApi.Common.Configuration.Options;
+using Skuld.WebApi.Common.Constants;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

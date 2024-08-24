@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Infrastructure\MappingProfile\**" />
-    <Content Remove="Infrastructure\MappingProfile\**" />
-    <EmbeddedResource Remove="Infrastructure\MappingProfile\**" />
-    <None Remove="Infrastructure\MappingProfile\**" />
+    <Compile Remove="Common\MappingProfile\**" />
+    <Content Remove="Common\MappingProfile\**" />
+    <EmbeddedResource Remove="Common\MappingProfile\**" />
+    <None Remove="Common\MappingProfile\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Skuld.WebApi.Infrastructure.Constants;
-using Skuld.WebApi.Infrastructure.ErrorHandling;
-using System;
+using Skuld.WebApi.Common.Constants;
+using Skuld.WebApi.Common.ErrorHandling;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -73,7 +72,7 @@ public abstract class BaseApiController : ControllerBase
 			HttpStatusCode.OK => Ok (data),
 			HttpStatusCode.Created => StatusCode (201),
 			HttpStatusCode.NoContent => NoContent (),
-			_ => throw new ArgumentException ("HTTP status code not handled", nameof (httpStatusCode))
+			_ => StatusCode ((int)httpStatusCode)
 		};
 	}
 }

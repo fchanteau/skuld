@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
-namespace Skuld.WebApi.Infrastructure.Authorization
+namespace Skuld.WebApi.Common.Authorization
 {
 	public class RoleAuthorizationHandler : AuthorizationHandler<RoleLevelRequirement>
 	{
