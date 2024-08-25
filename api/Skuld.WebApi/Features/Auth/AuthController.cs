@@ -71,5 +71,18 @@ namespace Skuld.WebApi.Features.Auth
 
 			return ToActionResult (result);
 		}
+
+		[AllowAnonymous]
+		[HttpGet ("test")]
+		public IActionResult Get ()
+		{
+			var result = new
+			{
+				Prop1 = "prop1",
+				Prop2 = 10
+			};
+			return Ok (result);
+		}
+
 	}
 }
