@@ -2,7 +2,6 @@ import {
   Container,
   Stack,
   Heading,
-  Link,
   Box,
   FormControl,
   FormLabel,
@@ -13,6 +12,7 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react";
+import { FormattedMessage } from "react-intl";
 
 import { PasswordField } from "./PasswordField";
 
@@ -27,10 +27,10 @@ export function Login(): JSX.Element {
         <Stack spacing="6">
           <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
             <Heading size={{ base: "xs", md: "sm" }}>
-              Log in to your account
+              <FormattedMessage id="auth.login" />
             </Heading>
             <Text color="fg.muted">
-              Don't have an account? <Link href="#">Sign up</Link>
+              <FormattedMessage id="auth.register.phrase" />
             </Text>
           </Stack>
         </Stack>
@@ -56,7 +56,7 @@ export function Login(): JSX.Element {
               </Button>
             </HStack>
             <Stack spacing="6">
-              <Button colorScheme="green">Sign in</Button>
+              <Button colorScheme="teal">Sign in</Button>
               <HStack>
                 <Divider />
                 <Text textStyle="sm" whiteSpace="nowrap" color="fg.muted">
@@ -64,7 +64,6 @@ export function Login(): JSX.Element {
                 </Text>
                 <Divider />
               </HStack>
-              {/* <OAuthButtonGroup /> */}
             </Stack>
           </Stack>
         </Box>
